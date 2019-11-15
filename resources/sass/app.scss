@@ -1,0 +1,20 @@
+
+@import "../../node_modules/vuetify/dist/vuetify.min.css";
+body{
+  color:#222222;
+  i,p,a,h1,h2,h3,h4,span{
+    color:#222222;
+  }
+}
+.w-100{
+  width: 100%;
+}
+.empty-state{
+  min-height: 200px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  opacity: 0.2;
+  width: 100%;
+}
