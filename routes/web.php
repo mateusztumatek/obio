@@ -13,7 +13,7 @@
 
 Route::get('/', 'HomeController@index');
 
-Route::get('/storage/{filePath}', 'StorageController@index')->where(['filePath' => '.*']);
+/*Route::get('/storage/{filePath}', 'StorageController@index')->where(['filePath' => '.*']);*/
 Route::post('/products/{id}/bounds', 'ProductController@bounds');
 Route::resource('/designs', 'DesignController');
 Route::delete('/designs/{id}/{storage}', 'DesignController@destroy');
