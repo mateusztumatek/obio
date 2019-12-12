@@ -10,8 +10,8 @@
                         <div class="col-md-11 text-left">
                             <h4>{{design.name}}</h4>
                             <div class="d-flex">
-                                <v-btn class="text--white" color="primary" @click="openDesign(design)">Otwórz projekt</v-btn>
-                                <v-btn class="ml-2 text--white" color="red" @click="deleteDesign(design)">Usuń projekt</v-btn>
+                                <v-btn class="text--white" color="primary" @click="openDesign(design)">{{$t('Otwórz projekt')}}</v-btn>
+                                <v-btn class="ml-2 text--white" color="red" @click="deleteDesign(design)">{{$t('Usuń projekt')}}</v-btn>
                             </div>
                         </div>
                     </div>
@@ -24,6 +24,7 @@
     import {getDesigns, deleteDesign} from "../../api/designs";
 
     export default {
+        name: 'Designs_elements',
         data(){
             return{
                 designs: []
@@ -40,8 +41,19 @@
                 })
             },
             openDesign(design){
+/*
                 this.$root.$eventBus.$emit('openDesign', design);
+*/
+                if(!design.storage){
+                    window.location.href="/kreator?storage=db&design_id="+design.id;
+                }else{
+                    window.location.href="/kreator?storage="+design.storage+"&design_id="+design.id;
+                }
+
+
+/*
                 this.$emit('close');
+*/
             },
             deleteDesign(design){
                 deleteDesign(design.id, (design.storage == 'session')? 'session' : 'db').then(response => {

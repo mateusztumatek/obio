@@ -8,17 +8,39 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Session;
+use TCG\Voyager\Traits\Translatable;
 
 class Product extends Model
 {
-    protected $fillable = ['desc', 'name', 'images', 'main_image', 'orders_count','views_count', 'data', 'external_id', 'short_desc', 'url', 'page_title', 'page_description', 'price', 'price_sellout', 'active', 'is_new', 'attachments', 'stock', 'sku', 'country', 'sku_parrent', 'weight', 'in_package', 'baselinker_id', 'keywords'];
+    use Translatable;
+    protected $fillable = ['desc', 'name', 'images', 'main_image', 'orders_count','views_count', 'data', 'external_id', 'short_desc', 'url', 'page_title', 'page_description', 'price', 'price_sellout', 'active', 'is_new', 'attachments', 'stock', 'sku', 'country', 'sku_parrent', 'weight', 'in_package', 'baselinker_id', 'keywords', 'category_id'];
     protected $table = 'products';
-    public $calculated_price;
+    protected $translatable = ['desc', 'name', 'short_desc', 'page_title', 'page_description'];
+    protected $appends = ['calculated', 'design_price', 'link', 'creator_link'];
+    protected $sortable = ['created_at', 'price', 'name', 'is_new'];
     use SoftDeletes;
-
-
-    public function categories(){
-        return $this->belongsToMany('App\Category', 'product_categories');
+    public function getCalculatedAttribute()
+    {
+        if($this->price_sellout && $this->price_sellout < $this->price){
+            return number_format($this->price_sellout, 2);
+        }
+        return number_format($this->price, 2);
+    }
+    public function getLinkAttribute(){
+        return $this->getLink();
+    }
+    public function getCreatorLinkAttribute(){
+        return $this->getCreatorLink();
+    }
+    public function getDesignPriceAttribute()
+    {
+        return 25;
+    }
+    public function category(){
+        return $this->belongsTo('App\Category');
+    }
+    public function attributes(){
+        return $this->hasMany('App\ProductAttribute', 'product_id')->with('attribute');
     }
     public function delete()
     {
@@ -36,17 +58,19 @@ class Product extends Model
         return $this->price;
     }
     public function getImages(){
-        $images = Images::where('product_id', $this->id)->get();
-
-        if(count($images) == 0){
-            $images = array();
-            array_push($images, ['image' => 'default/product.jpg']);
-        }else{
-            foreach ($images as $image){
-                if(!file_exists(storage_path('/app/public/'.$image->image))){
-                    $image->image = 'default/product.jpg';
-                }
+        $images = collect();
+        if($this->images && $this->images != ''){
+            $tmp = json_decode($this->images);
+            foreach ($tmp as $t){
+                $images->push($t);
             }
+        }
+        if($this->main_image){
+            $images->prepend($this->main_image);
+        }
+        $images = $images->unique();
+        if(count($images) == 0){
+            $images->push('/products/default.jpg');
         }
         return $images;
     }
@@ -75,7 +99,10 @@ class Product extends Model
         return $arr;
     }
     public function getLink(){
-        return ($this->url)?url('/product/'.$this->id.'/'.$this->url) : url('/product/'.$this->id).'/';
+        return ($this->url)? route('produkty.show', ['produkty' => $this->url]) : route('produkty.show', ['produkty' => $this->id]);
+    }
+    public function getCreatorLink(){
+        return route('kreator', ['product_id' => $this->id]);
     }
     public function getRelatedProducts($type = 'crosselling'){
         if($type == 'crosselling')
@@ -211,5 +238,9 @@ class Product extends Model
         $screen = true;
         $minimum = 50;
         return ['prices' => $prices, 'screen_price' => setting('site.screen_price'), 'minimum' => $minimum, 'screen'=> $screen, 'print_about' => []];
+    }
+    public static function getSortable(){
+        $ex = new Product();
+        return $ex->sortable;
     }
 }

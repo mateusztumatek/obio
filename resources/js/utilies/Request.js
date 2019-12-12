@@ -1,9 +1,10 @@
 import axios from 'axios';
 // Create axios instance
 const service = axios.create({
-    baseURL: base_url,
+    baseURL: relative_url,
     timeout: 10000, // Request timeout
 });
+
 
 service.interceptors.request.use(
     config => {

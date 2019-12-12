@@ -79,6 +79,7 @@ return [
     | to any of the locales which will be supported by the application.
     |
     */
+    'locales' => ['pl', 'en', 'de', 'fr'],
 
     'locale' => 'pl',
 

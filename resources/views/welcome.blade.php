@@ -38,7 +38,10 @@
                         Laravel
                     </div>
                     <button class="btn btn-primary mb-3" @click="toggleCart()">Zobacz kartę</button>
-                    <stepper-component :fonts="{{json_encode($fonts)}}" :product="{{json_encode($product)}}"></stepper-component>
+                    @if($product || $design)
+
+                        <stepper-component :fonts="{{json_encode($fonts)}}" :product="{{json_encode($product)}}" :designs="{{json_encode($design)}}"></stepper-component>
+                    @endif
 
     {{--
                     <example :image="'{{url('/storage/'.$product->main_image)}}'" :product="{{json_encode($product)}}"></example>

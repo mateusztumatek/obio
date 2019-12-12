@@ -8,20 +8,28 @@ use Illuminate\Support\Facades\Session;
 class Cart
 {
     public $items, $price;
-    public function addItem($product, $quantity, $design, $preview_image){
+    public function addItem($product, $quantity, $design, $preview_image, $size, $link){
+
         $items_price = 0;
         $product->quantity = $quantity;
         $product->preview_image = $preview_image;
         $product->design = $design;
-        $items_price = $items_price + ($product->getPrice() * $quantity);
+        $product->size = $size;
+        $items_price = $items_price + ($product->calculated * $quantity);
         if($design){
             $design->price = $design->calculatePrice();
-            $total_price = $items_price + $design->price;
+            $total_price = ($product->calculated * $quantity) + ($design->price * $quantity);
+        }else{
+            $total_price = $product->calculated * $quantity;
         }
         $product->items_price = $items_price;
         $product->total_price = $total_price;
+        $product->price = $product->calculated;
         $this->price = $this->price + $product->total_price;
+
+        $product->item_link = $link;
         $this->items->push($product);
+
     }
     public static function getCart(){
         if(!Session::has('cart')){
@@ -46,6 +54,13 @@ class Cart
         $temp = $this->items[$index];
         $temp->quantity = $item['quantity'];
         $this->deleteItem($index);
-        $this->addItem($temp, $temp->quantity, $temp->design, $temp->preview_image);
+        $this->addItem($temp, $temp->quantity, $temp->design, $temp->preview_image, $temp->size, $temp->link);
+    }
+
+    public function checkIfAlreadyExist($product, $design, $size){
+        foreach ($this->items as $key => $item){
+            if($item->id == $product->id && $item->design == $design && $item->size == $size) return $key;
+        }
+        return null;
     }
 }

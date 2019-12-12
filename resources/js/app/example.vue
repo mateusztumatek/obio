@@ -54,7 +54,7 @@
               this.configKonva = data.configKonva;
               this.tool = data.tool;
               this.configImage.src = data.configImage.src;
-              this.setImage(this.configImage.src);
+              this.setImage(this.image);
               this.tools = data.tools;
           }
         },
@@ -143,6 +143,8 @@
             },
             setImage(src){
                 const img = new window.Image();
+                this.configImage.image_src = src;
+                src = this.$root.getSrc(src);
                 img.src = src;
                 let v = this;
                 img.onload = function(){

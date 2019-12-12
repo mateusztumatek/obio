@@ -5,7 +5,7 @@
                 <v-btn color="white" icon @click="show = false">
                     <v-icon class="white--text">mdi-close</v-icon>
                 </v-btn>
-                <v-toolbar-title>Twoje projekty</v-toolbar-title>
+                <v-toolbar-title>{{$t('Twoje projekty')}}</v-toolbar-title>
             </v-toolbar>
             <Designs @close="show=false"></Designs>
         </v-card>

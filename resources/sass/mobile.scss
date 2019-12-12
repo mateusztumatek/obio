@@ -1,0 +1,32 @@
+@media screen and (max-width: 1000px){
+  [class*="col-"] {
+    padding: 8px;
+  }
+  .row{
+    margin-left: -8px;
+    margin-right: -8px;
+  }
+  button{
+    span{
+      width: 100%;
+      white-space: pre-wrap;
+    }
+  }
+  #filters{
+    transition: all 300ms;
+    max-height: 0px;
+    overflow: hidden;
+  }
+  .collapsed{
+    max-height: 800px !important;
+  }
+  .contact_holder{
+    width: 90%;
+    max-width: 90%;
+  }
+}
+@media screen and (min-width: 1000px){
+  .xs-only{
+    display: none;
+  }
+}

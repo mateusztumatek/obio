@@ -3,9 +3,11 @@ window.Vue = require('vue');
 import VueKonva from 'vue-konva'
 Vue.use(VueKonva);
 Vue.component('products-edit-add', require('./admin/products/edit-add.vue').default);
+Vue.component('products-attributes', require('./admin/products/attributes').default);
 Vue.component('example', require('./app/example.vue').default);
 Vue.component('pattern-edit-add', require('./admin/patterns/pattern.vue').default);
-
+Vue.component('product-attributes', require('./admin/products/attributes').default);
+Vue.component('translations', require('./admin/translations/translations').default);
 Vue.mixin({
     methods:{
         getSrc(src){
@@ -31,7 +33,10 @@ if(window.document.getElementById('app')){
 
                 }
                 return this.base_url+'/storage/'+src;
-            }
+            },
+           /* setInputValue(data, input){
+                console.log($("input[name = " + input + "]"));
+            }*/
         }
     });
 }

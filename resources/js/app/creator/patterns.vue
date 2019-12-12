@@ -1,8 +1,8 @@
 <template>
     <div>
         <v-row>
-            <v-col lg="3" md="4" sm="12" v-for="pattern in patterns">
-                <v-card :color="(pattern == selectedPattern)? 'primary darken-2' : ''" :dark="selectedPattern == pattern" ripple @click="selectPattern(pattern)">
+            <div class="col-6 col-lg-2 col-md-4" v-for="pattern in patterns">
+                <v-card style="border-color: #222222 !important;" tile class="my-border" :color="(pattern == selectedPattern)? 'primary' : ''" :dark="selectedPattern == pattern" ripple @click="selectPattern(pattern)">
                     <v-card-title>
                         {{pattern.name}}
                     </v-card-title>
@@ -10,7 +10,7 @@
                         <v-img class="ma-auto" width="50%" :src="$root.getSrc(pattern.image)"></v-img>
                     </v-card-text>
                 </v-card>
-            </v-col>
+            </div>
         </v-row>
     </div>
 </template>
@@ -26,6 +26,12 @@
         },
         mounted() {
             this.getPatterns();
+            this.$root.$eventBus.$on('openDesign', (design) => {
+                setTimeout(() => {
+                    this.selectedPattern = this.patterns.find(x => x.id == design.pattern_id);
+                    this.$emit('select', this.selectedPattern);
+                }, 500)
+            })
         },
         methods:{
             selectPattern(pattern){
@@ -42,3 +48,11 @@
         }
     }
 </script>
+<style lang="scss">
+    .card-title-absolute{
+        position: absolute;
+        left: 0px;
+        top: 0px;
+        background-color: #222222;
+    }
+</style>

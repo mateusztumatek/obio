@@ -18,7 +18,7 @@
     <v-content class="container">
         <div class="flex-center position-ref">
             <div class="ma-auto">
-                <example :image="'{{url('/storage/'.$product->main_image)}}'" :product="{{json_encode($product)}}"></example>
+                <example :image="'{{$product->main_image}}'" :product="{{json_encode($product)}}"></example>
             </div>
         </div>
     </v-content>
@@ -26,7 +26,16 @@
 </v-app>
 </body>
 <script>
-    var base_url = "{{url('/')}}";
+    var translations = JSON.parse('{!! json_encode(\Illuminate\Support\Facades\Lang::get('my')) !!}');
+    var session_errors = JSON.parse('{!! json_encode($errors->all()) !!}');
+            @if(\Illuminate\Support\Facades\App::getLocale() != 'pl')
+    var lang_slug = '/{{\Illuminate\Support\Facades\App::getLocale()}}';
+            @else
+    var lang_slug = '';
+            @endif
+    var base_url= "{{url('/')}}";
+    var relative_url = "{{url('/')}}"+lang_slug;
+    var lang_slug = "{{(\Illuminate\Support\Facades\App::getLocale() != 'pl')? \Illuminate\Support\Facades\App::getLocale() : ''}}"
 </script>
 <script src="{{ asset('js/app.js') }}" defer></script>
 </html>

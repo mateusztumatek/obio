@@ -22,9 +22,10 @@
     import {colorToFilter} from "../../utilies/FilterComputed";
 
     export default {
-        props:['product', 'texts', 'get_project'],
+        props:['product', 'texts', 'get_project', 'rate'],
         data(){
             return{
+                constantRate: 600,
                 temp:{
                   x:150,
                   y:150,
@@ -37,6 +38,11 @@
             }
         },
         watch:{
+            rate: function(){
+/*
+                this.setStageSize();
+*/
+            },
             texts:{
                 handler(val){
                    /* var imageObj = new Image();
@@ -60,42 +66,54 @@
                 }
             }
         },
+
         mounted() {
             if(this.product.data){
+
                 var data = JSON.parse(this.product.data);
                 this.configKonva = data.configKonva;
                 this.configImage = {};
                 this.configImage.src = data.configImage.src;
-                this.setImage(this.configImage.src);
-                var width = this.calculate(data.tools[0]).width;
-                var height = this.calculate(data.tools[0]).height;
-                this.temp = data.tools[0];
-                this.temp.width = width;
-                this.temp.height= height;
-                this.temp.scaleX = 1;
-                this.temp.scaleY = 1;
-                this.temp.draggable = false;
-                if(this.$root.checkMobile()){
-                    var rate = this.configKonva.width / 300;
-                    this.configKonva.width = this.configKonva.width / rate;
-                    this.configKonva.height = this.configKonva.height / rate;
-                    this.configImage.width = this.configKonva.width / rate;
-                    this.configImage.height = this.configKonva.height / rate;
-                    this.temp.width = this.temp.width / rate;
-                    this.temp.height = this.temp.height / rate;
-                    this.temp.x = this.temp.x/ rate;
-                    this.temp.y = this.temp.y/ rate;
-                }
+                this.configImage.image_src = data.configImage.image_src;
+                this.setImage(this.$root.getSrc(this.configImage.image_src)).then(() => {
+                    var width = this.calculate(data.tools[0]).width;
+                    var height = this.calculate(data.tools[0]).height;
+                    this.temp = data.tools[0];
+                    this.temp.width = width;
+                    this.temp.height= height;
+                    this.temp.scaleX = 1;
+                    this.temp.scaleY = 1;
+                    this.temp.draggable = false;
+                    setTimeout(() => {
+                        this.$root.$eventBus.$emit('parent_layer', this.temp);
+                    },50);
+                    this.$root.$eventBus.$on('getStageImage', () => {
+                        this.$root.$eventBus.$emit('stageImage', this.stageToImage());
+                    })
+
+                    this.setStageSize();
+                });
             }
-            setTimeout(() => {
-                this.$root.$eventBus.$emit('parent_layer', this.temp);
-            },50);
-            this.$root.$eventBus.$on('getStageImage', () => {
-                this.$root.$eventBus.$emit('stageImage', this.stageToImage());
-            })
+
         },
         methods:{
+            setStageSize(){
+                this.configKonva.width = this.constantRate / this.rate;
+                this.configKonva.height = this.constantRate/ this.rate;
+                this.configImage.width = this.configKonva.width;
+                this.configImage.height = this.configKonva.height;
+                this.temp.width = this.temp.width / this.rate;
+                this.temp.height = this.temp.height / this.rate;
+                this.temp.x = this.temp.x/ this.rate;
+                this.temp.y = this.temp.y/ this.rate;
+                console.log(this.temp);
+                this.setImage(this.$root.getSrc(this.configImage.image_src), {width: this.configImage.width, height: this.configImage.height});
 
+                setTimeout(() => {
+                    this.$root.$eventBus.$emit('parent_layer', this.temp);
+                },50);
+
+            },
             stageToImage(){
                 this.selectedObject = null;
                 this.selectedShapeName = '';
@@ -105,24 +123,34 @@
             calculate(data){
                 return{width: data.width*data.scaleX, height: data.height*data.scaleY};
             },
-            setImage(src){
-                const img = new window.Image();
-                img.src = src;
-                let v = this;
-                img.onload = function(){
-                    // set image only when it is loaded
-                    v.configImage.src = src;
-                    v.$set(v.configImage, 'image', img);
-                    if(this.width >= this.height){
-                        let ratio = this.width / v.configKonva.width;
-                        v.configImage.width = this.width / ratio;
-                        v.configImage.height = this.height / ratio;
-                    }else{
-                        let ratio = this.height / v.configKonva.height;
-                        v.configImage.height = this.height / ratio;
-                        v.configImage.width = this.width / ratio;
-                    }
-                };
+            setImage(src, setProps){
+                return new Promise((resolve, reject) =>{
+                    const img = new window.Image();
+                    img.src = src;
+                    let v = this;
+                    img.onload = function(){
+                        // set image only when it is loaded
+                        v.configImage.src = src;
+                        v.$set(v.configImage, 'image', img);
+                        if(setProps && setProps.width){
+                            v.configImage.width = setProps.width;
+                            v.configImage.height = setProps.height;
+                        }else{
+                            if(this.width >= this.height){
+                                let ratio = this.width / v.configKonva.width;
+                                v.configImage.width = this.width / ratio;
+                                v.configImage.height = this.height / ratio;
+                            }else{
+                                let ratio = this.height / v.configKonva.height;
+                                v.configImage.height = this.height / ratio;
+                                v.configImage.width = this.width / ratio;
+                            }
+                        }
+
+                        resolve();
+                    };
+                })
+
             }
         }
     }

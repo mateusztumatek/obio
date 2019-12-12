@@ -23,9 +23,13 @@
   },
   "dependencies": {
     "chart.js": "^2.9.2",
+    "jquery": "^3.4.1",
     "konva": "^4.0.16",
     "vue": "^2.6.10",
+    "vue-i18n": "^8.15.1",
     "vue-konva": "^2.0.11",
+    "vue-slick": "^1.1.15",
+    "vue-the-mask": "^0.11.1",
     "vuetify": "^2.1.9"
   }
 }

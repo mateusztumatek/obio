@@ -2,7 +2,7 @@
     <div class="errors">
         <transition-group name="slide-fade" mode="in-out">
             <div v-bind:key="key" v-for="error, key in errors" >
-                <v-alert  :type="error.type" dismissible>
+                <v-alert :light="true" style="border-color: #222222 !important;" class="my-border" :color="(error.type == 'info')? 'primary' : 'accent'" tile :type="error.type" dismissible>
                     {{error.text}}
                 </v-alert>
             </div>
@@ -52,8 +52,18 @@
         width: 50%;
         left: 25%;
         bottom: 60px;
+        .primary{
+            i{
+                color: #222222 !important;
+            }
+        }
     }
-
+    @media screen and (max-width: 1200px){
+        .errors{
+            width: 95%;
+            left: 2.5%;
+        }
+    }
     .slide-fade-enter-active {
         transition: all .4s ease;
     }

@@ -18,20 +18,22 @@ class CartController extends Controller
         $cart = Cart::getCart();
         $request->validate([
             'product_id' => 'required|exists:products,id',
-            'design' => 'array',
+            /*'design' => 'array',*/
             'quantity' => 'required|min:1',
             'image' => [function($field, $data, $fail)use($request){
                 if($request->design){
                     if(!$data) $fail('Pole zdjęcie jest wymagane');
                     if(!file_exists(storage_path('app/public/'.$data))) $fail('Obrazek nie istnieje');
                 }
-            }]
+            }],
+            'size' => 'required'
         ]);
         $product = Product::find($request->product_id);
         if($request->design){
             $design = Design::create([
                 'image' => $request->image,
                 'data' => json_encode($request->design),
+                'pattern_id' => $request->pattern_id,
                 'product_id' => $request->product_id,
                 'user_id' => (Auth::check())? Auth::id() : null
             ]);
@@ -39,7 +41,13 @@ class CartController extends Controller
             $design = null;
         }
         $preview_image = ($request->image)? $request->image : $product->main_image;
-        $cart->addItem($product, $request->quantity, $design, $preview_image);
+        $key = $cart->checkIfAlreadyExist($product, $design, $request->size);
+        if($key){
+            $request->request->set('quantity', $cart->items[$key]->quantity + $request->quantity);
+            return $this->update($request, $key);
+        }
+        ($design)? $link = $design->getLink() : $link = $product->getLink();
+        $cart->addItem($product, $request->quantity, $design, $preview_image, $request->size, $link);
         $cart->save();
         return response()->json($cart);
     }

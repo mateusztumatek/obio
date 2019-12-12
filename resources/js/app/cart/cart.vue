@@ -10,25 +10,26 @@
 
         <v-list dense>
             <v-list-item>
-                <v-list-item-title><h3 class="title">Twoja karta</h3></v-list-item-title>
+                <v-list-item-title><h3 class="title">{{$t('Twoja karta')}}</h3></v-list-item-title>
                 <v-list-item-action>
                     <v-btn text icon small @click="emit(false)"><v-icon>mdi-close</v-icon></v-btn>
                 </v-list-item-action>
             </v-list-item>
             <v-divider></v-divider>
             <v-container>
-                <v-list-item v-if="cart.items && cart.items.length > 0" :href="(!item.editable)?'/?design_id='+item.design.id:null" v-for="item,index in cart.items">
-                    <v-list-item-avatar size="100" tile>
+                <v-list-item v-if="cart.items && cart.items.length > 0" :href="item.item_link" v-for="item,index in cart.items">
+                    <v-list-item-avatar :size="(!$root.isMobile)? '100' : '50'" tile>
                         <v-img :src="$root.getSrc(item.preview_image)"></v-img>
                     </v-list-item-avatar>
                     <v-list-item-content>
                         <v-list-item-title class="title">{{item.name}}</v-list-item-title>
-                        <v-list-item-subtitle class="mt-2">Cena jednostkowa: {{item.price | toCurrency()}}</v-list-item-subtitle>
-                        <v-list-item-subtitle v-if="item.quantity > 1">Cena za przedmioty: {{item.items_price | toCurrency()}}</v-list-item-subtitle>
-                        <v-list-item-subtitle v-if="item.design">Cena za przedmioty + haft: {{item.total_price | toCurrency()}}</v-list-item-subtitle>
-                        <v-list-item-subtitle v-if="!item.editable">Ilość: {{item.quantity}}</v-list-item-subtitle>
+                        <v-list-item-subtitle>{{$t('Rozmiar')}}: {{item.size}}</v-list-item-subtitle>
+                        <v-list-item-subtitle class="mt-2">{{$t('Cena jednostkowa')}}: {{item.price | toCurrency()}}</v-list-item-subtitle>
+                        <v-list-item-subtitle v-if="item.quantity > 1">{{$t('Cena za przedmioty')}}: {{item.items_price | toCurrency()}}</v-list-item-subtitle>
+                        <v-list-item-subtitle v-if="item.design">{{$t('Cena za przedmioty')}} + {{$t('haft')}}: {{item.total_price | toCurrency()}}</v-list-item-subtitle>
+                        <v-list-item-subtitle v-if="!item.editable">{{$t('Ilość')}}: {{item.quantity}}</v-list-item-subtitle>
                         <v-list-item-subtitle v-if="item.editable">
-                            <v-text-field type="number" dense v-model="item.quantity"></v-text-field>
+                            <v-text-field @click.prevent type="number" dense v-model="item.quantity"></v-text-field>
                         </v-list-item-subtitle>
                     </v-list-item-content>
                     <v-list-item-action @click.prevent style="align-self: center !important;">
@@ -38,18 +39,18 @@
                 </v-list-item>
                 <v-list-item v-if="!cart.items || cart.items.length == 0">
                     <div class="empty-state text-center">
-                        <h2>Brak produktów w koszyku</h2>
+                        <h2>{{$t('Brak produktów w koszyku')}}</h2>
                     </div>
                 </v-list-item>
             </v-container>
             <v-divider></v-divider>
             <v-list-item>
                 <v-list-item-content>
-                    <h3 class="titlte">Cena za wszystko: {{cart.price | toCurrency()}}</h3>
+                    <h3 class="titlte">{{$t('Cena za wszystko')}}: {{cart.price | toCurrency()}}</h3>
                 </v-list-item-content>
             </v-list-item>
             <v-list-item>
-                <v-btn class="w-100" :href="$root.base_url+'/zamawiam'">Przejdz do kasy</v-btn>
+                <v-btn class="w-100" :href="$root.base_url+'/zamawiam'">{{$t('Przejdź do kasy')}}</v-btn>
             </v-list-item>
         </v-list>
     </v-navigation-drawer>
@@ -80,11 +81,12 @@
         },
         methods:{
             deleteItem(index){
-                deleteCartItem(index).then(response => {this.cart=response}).catch(e => {this.$eventBus.$emit('add_error', {text: 'Nie udało się usunąć przedmiotu z koszyka'})});
+                deleteCartItem(index).then(response => {this.cart=response; this.$eventBus.$emit('updateCart', this.cart);}).catch(e => {this.$eventBus.$emit('add_error', {text: 'Nie udało się usunąć przedmiotu z koszyka'})});
             },
             updateItem(item,index){
                 editCartItem(index, item).then(response => {
                     this.cart = response;
+                    this.$eventBus.$emit('updateCart', this.cart);
                 }).catch(e => {
                     this.$eventBus.$emit('add_error', {text: 'Nie udało się zaktualizować produktu w koszyku'});
                 })
@@ -95,6 +97,7 @@
             getCart(){
                 getCart().then(response => {
                     this.cart = response;
+                    this.$eventBus.$emit('updateCart', this.cart);
                 }).catch(e => {
                     this.$eventBus.$emit('app/add_error', {text: 'Nie udało się pobrac koszyka'});
                 })

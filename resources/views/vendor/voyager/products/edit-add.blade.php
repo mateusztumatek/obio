@@ -89,8 +89,10 @@
                                     @endif
                                 </div>
                             @endforeach
+                                <div id="app">
+                                    <products-attributes @if($edit) :product="{{json_encode($dataTypeContent->load('attributes'))}}" @endif @attributes="setInputValue($event, 'attributes')" :attributes_list="{{json_encode(\App\Attribute::all())}}"></products-attributes>
+                                </div>
                         </div><!-- panel-body -->
-
                         <div class="panel-footer">
                             @section('submit-buttons')
                                 <button type="submit" class="btn btn-primary save">{{ __('voyager::generic.save') }}</button>
@@ -140,7 +142,6 @@
 @section('javascript')
     <script>
         var base_url = '{{url('/')}}';
-
         function slugify(string) {
             const a = 'àáâäæãåāăąçćčđďèéêëēėęěğǵḧîïíīįìłḿñńǹňôöòóœøōõőṕŕřßśšşșťțûüùúūǘůűųẃẍÿýžźż·/_,:;'
             const b = 'aaaaaaaaaacccddeeeeeeeegghiiiiiilmnnnnoooooooooprrsssssttuuuuuuuuuwxyyzzz------'
@@ -179,7 +180,9 @@
 
         $('document').ready(function () {
             $('input[name = "name"]').change(function () {
-                $('input[name = "url"]').val(slugify($(this).val()));
+                if($('input[id=pl]').parent().hasClass('active')){
+                    $('input[name = "url"]').val(slugify($(this).val()));
+                }
             })
             $('.toggleswitch').bootstrapToggle();
 

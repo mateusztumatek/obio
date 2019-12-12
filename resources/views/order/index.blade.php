@@ -1,4 +1,4 @@
 @extends('layout.app')
 @section('content')
-    ZAMAWIAM
+    <order :cart="cart"></order>
     @endsection
