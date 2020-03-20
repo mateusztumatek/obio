@@ -1,4 +1,5 @@
 import axios from 'axios';
+import Vue from 'vue';
 // Create axios instance
 const service = axios.create({
     baseURL: relative_url,
@@ -8,9 +9,9 @@ const service = axios.create({
 
 service.interceptors.request.use(
     config => {
-        /*if(getDeviceHash()){
-            config.headers['Device-hash'] = getDeviceHash(); // Set JWT token
-        }*/
+        config.onUploadProgress = (event) => {
+            Vue.prototype.$eventBus.$emit('uploadingProgress', Math.round((event.loaded * 100)/ event.total));
+        }
         return config;
     },
     error => {
@@ -22,9 +23,11 @@ service.interceptors.request.use(
 // response pre-processing
 service.interceptors.response.use(
     response => {
+        Vue.prototype.$eventBus.$emit('stopUploading');
         return response.data;
     },
     (error, data) => {
+        Vue.prototype.$eventBus.$emit('stopUploading');
        /* if(error.response && error.response.data.message){
             if(error.response.data.message == 'Unauthenticated.'){
                 removeToken();

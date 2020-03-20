@@ -109,9 +109,7 @@
             }
         },
         mounted(){
-/*
           this.user = this.temp;
-*/
           setTimeout(() => {
               this.validate();
           }, 200)

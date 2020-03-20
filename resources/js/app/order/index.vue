@@ -44,7 +44,6 @@
                 payment_methods:[
                     {name: 'Płatność przelewem (ręcznie)', value: 'bank'},
                     {name: 'Płatność PayU', value:'payu'},
-                    {name: 'Płatność PayPal', value: 'paypal'}
                 ],
                 user: null,
                 rules: {
@@ -69,17 +68,20 @@
                 if(this.errors.length == 0){
                     if(this.$refs.order_form.validate()){
                         this.loading = true;
-                        setTimeout(() => {
-                            storeOrder(this.order).then(response => {
-                                this.loading = false;
-                                if(response.redirect){
-                                    window.location.href = response.redirect;
+                        storeOrder(this.order).then(response => {
+                            this.loading = false;
+                            if(response.redirect){
+                                window.location.href = response.redirect;
+                            }
+                        }).catch(e => {
+                            this.$eventBus.$emit('add_error', {text: 'Błąd podczas składania zamówienia'});
+                            if(typeof e.response.data == 'object'){
+                                for(var i in e.response.data){
+                                    this.$eventBus.$emit('add_error', {text: e.response.data[i]});
                                 }
-                            }).catch(e => {
-                                this.$eventBus.$emit('add_error', {text: 'Błąd podczas składania zamówienia'});
-                                this.loading = false;
-                            })
-                        }, 1500)
+                            }
+                            this.loading = false;
+                        })
                     }
                 }
             },

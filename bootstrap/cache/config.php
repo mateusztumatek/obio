@@ -1,7 +1,7 @@
 <?php return array (
   'app' => 
   array (
-    'name' => 'Laravel',
+    'name' => 'Obio',
     'env' => 'local',
     'debug' => true,
     'url' => 'http://127.0.0.1:8001',
@@ -17,7 +17,7 @@
     'locale' => 'pl',
     'fallback_locale' => 'pl',
     'faker_locale' => 'en_US',
-    'key' => 'base64:x6RgleRdnycKbIIVjWVLjvhKPz24oXqZJy0t0MuCvcM=',
+    'key' => 'base64:pOEnmnIlpvlkvFN2aWJi78Kf1MXniE9saHZuJQibbPE=',
     'cipher' => 'AES-256-CBC',
     'providers' => 
     array (
@@ -134,19 +134,19 @@
   array (
     'backup' => 
     array (
-      'name' => 'Laravel',
+      'name' => 'Obio',
       'source' => 
       array (
         'files' => 
         array (
           'include' => 
           array (
-            0 => '/Users/mateusz/Documents/yax/_htdocs/ideacap_new',
+            0 => '/Users/mateusz/Documents/yax/_htdocs/obio',
           ),
           'exclude' => 
           array (
-            0 => '/Users/mateusz/Documents/yax/_htdocs/ideacap_new/vendor',
-            1 => '/Users/mateusz/Documents/yax/_htdocs/ideacap_new/node_modules',
+            0 => '/Users/mateusz/Documents/yax/_htdocs/obio/vendor',
+            1 => '/Users/mateusz/Documents/yax/_htdocs/obio/node_modules',
           ),
           'follow_links' => false,
         ),
@@ -164,7 +164,7 @@
           0 => 'local',
         ),
       ),
-      'temporary_directory' => '/Users/mateusz/Documents/yax/_htdocs/ideacap_new/storage/app/backup-temp',
+      'temporary_directory' => '/Users/mateusz/Documents/yax/_htdocs/obio/storage/app/backup-temp',
     ),
     'notifications' => 
     array (
@@ -217,7 +217,7 @@
     array (
       0 => 
       array (
-        'name' => 'Laravel',
+        'name' => 'Obio',
         'disks' => 
         array (
           0 => 'local',
@@ -297,7 +297,7 @@
       'file' => 
       array (
         'driver' => 'file',
-        'path' => '/Users/mateusz/Documents/yax/_htdocs/ideacap_new/storage/framework/cache/data',
+        'path' => '/Users/mateusz/Documents/yax/_htdocs/obio/storage/framework/cache/data',
       ),
       'memcached' => 
       array (
@@ -336,7 +336,7 @@
         'endpoint' => NULL,
       ),
     ),
-    'prefix' => 'laravel_cache',
+    'prefix' => 'obio_cache',
   ),
   'database' => 
   array (
@@ -347,7 +347,7 @@
       array (
         'driver' => 'sqlite',
         'url' => NULL,
-        'database' => 'ideacap_new',
+        'database' => 'obio',
         'prefix' => '',
         'foreign_key_constraints' => true,
       ),
@@ -357,7 +357,7 @@
         'url' => NULL,
         'host' => '127.0.0.1',
         'port' => '3306',
-        'database' => 'ideacap_new',
+        'database' => 'obio',
         'username' => 'root',
         'password' => 'wroclaw71',
         'unix_socket' => '',
@@ -377,7 +377,7 @@
         'url' => NULL,
         'host' => '127.0.0.1',
         'port' => '3306',
-        'database' => 'ideacap_new',
+        'database' => 'obio',
         'username' => 'root',
         'password' => 'wroclaw71',
         'charset' => 'utf8',
@@ -392,7 +392,7 @@
         'url' => NULL,
         'host' => '127.0.0.1',
         'port' => '3306',
-        'database' => 'ideacap_new',
+        'database' => 'obio',
         'username' => 'root',
         'password' => 'wroclaw71',
         'charset' => 'utf8',
@@ -407,7 +407,7 @@
       'options' => 
       array (
         'cluster' => 'redis',
-        'prefix' => 'laravel_database_',
+        'prefix' => 'obio_database_',
       ),
       'default' => 
       array (
@@ -436,12 +436,12 @@
       'local' => 
       array (
         'driver' => 'local',
-        'root' => '/Users/mateusz/Documents/yax/_htdocs/ideacap_new/storage/AppService',
+        'root' => '/Users/mateusz/Documents/yax/_htdocs/obio/storage/AppService',
       ),
       'public' => 
       array (
         'driver' => 'local',
-        'root' => '/Users/mateusz/Documents/yax/_htdocs/ideacap_new/storage/app/public',
+        'root' => '/Users/mateusz/Documents/yax/_htdocs/obio/storage/app/public',
         'url' => 'http://127.0.0.1:8001/storage',
         'visibility' => 'public',
       ),
@@ -491,13 +491,13 @@
       'single' => 
       array (
         'driver' => 'single',
-        'path' => '/Users/mateusz/Documents/yax/_htdocs/ideacap_new/storage/logs/laravel.log',
+        'path' => '/Users/mateusz/Documents/yax/_htdocs/obio/storage/logs/laravel.log',
         'level' => 'debug',
       ),
       'daily' => 
       array (
         'driver' => 'daily',
-        'path' => '/Users/mateusz/Documents/yax/_htdocs/ideacap_new/storage/logs/laravel.log',
+        'path' => '/Users/mateusz/Documents/yax/_htdocs/obio/storage/logs/laravel.log',
         'level' => 'debug',
         'days' => 14,
       ),
@@ -566,7 +566,7 @@
       'theme' => 'default',
       'paths' => 
       array (
-        0 => '/Users/mateusz/Documents/yax/_htdocs/ideacap_new/resources/views/vendor/mail',
+        0 => '/Users/mateusz/Documents/yax/_htdocs/obio/resources/views/vendor/mail',
       ),
     ),
     'log_channel' => NULL,
@@ -653,7 +653,7 @@
     'lifetime' => '120',
     'expire_on_close' => false,
     'encrypt' => false,
-    'files' => '/Users/mateusz/Documents/yax/_htdocs/ideacap_new/storage/framework/sessions',
+    'files' => '/Users/mateusz/Documents/yax/_htdocs/obio/storage/framework/sessions',
     'connection' => NULL,
     'table' => 'sessions',
     'store' => NULL,
@@ -662,7 +662,7 @@
       0 => 2,
       1 => 100,
     ),
-    'cookie' => 'laravel_session',
+    'cookie' => 'obio_session',
     'path' => '/',
     'domain' => NULL,
     'secure' => false,
@@ -698,7 +698,7 @@
     array (
       0 => 'tracker',
     ),
-    'geoip_database_path' => '/Users/mateusz/Documents/yax/_htdocs/ideacap_new/config/geoip',
+    'geoip_database_path' => '/Users/mateusz/Documents/yax/_htdocs/obio/config/geoip',
     'log_sql_queries_bindings' => false,
     'log_events' => false,
     'log_only_events' => 
@@ -779,9 +779,9 @@
   array (
     'paths' => 
     array (
-      0 => '/Users/mateusz/Documents/yax/_htdocs/ideacap_new/resources/views',
+      0 => '/Users/mateusz/Documents/yax/_htdocs/obio/resources/views',
     ),
-    'compiled' => '/Users/mateusz/Documents/yax/_htdocs/ideacap_new/storage/framework/views',
+    'compiled' => '/Users/mateusz/Documents/yax/_htdocs/obio/storage/framework/views',
   ),
   'voyager' => 
   array (
@@ -955,7 +955,7 @@
   ),
   'laravel_google_translate' => 
   array (
-    'google_translate_api_key' => 'AIzaSyDtb3Q4IcFfJ8FM4M8f7DbaPuk448NcyoM',
+    'google_translate_api_key' => NULL,
     'trans_functions' => 
     array (
       0 => 'trans',

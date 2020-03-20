@@ -1,4 +1,3 @@
-require('./plugins/glitch');
 $(document).ready(() => {
     /*$('.banner-row').height()*/
     $('*[data-description_holder]').each((index, item) => {
@@ -19,32 +18,7 @@ $(document).ready(() => {
         })
         $(item).append(button);
     })
-    setTimeout(() => {
-        $('*[data-class_after_load]').each(function (index, item) {
-            $(item).addClass($(item).data('class_after_load'));
-        });
-    }, 200)
 
-    $( ".bg" ).mgGlitch({
-        // set 'true' to stop the plugin
-        destroy : false,
-        // set 'false' to stop glitching
-        glitch: true,
-        // set 'false' to stop scaling
-        scale: true,
-        // set 'false' to stop glitch blending
-        blend : true,
-        // select blend mode type
-        blendModeType : 'hue',
-        // set min time for glitch 1 elem
-        glitch1TimeMin : 100,
-        // set max time for glitch 1 elem
-        glitch1TimeMax : 200,
-        // set min time for glitch 2 elem
-        glitch2TimeMin : 10,
-        // set max time for glitch 2 elem
-        glitch2TimeMax : 400,
-    });
     $('.seo-trigger').on('click', function () {
         $(this).parent().addClass('seo-active');
     })

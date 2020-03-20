@@ -1,44 +1,40 @@
 <template>
     <v-navigation-drawer
-            :value="show"
-            @input="emit"
+            v-model="$settings.sidebar"
             app
             clipped
     >
-        <v-list dense>
-            <v-list-item :href="item.url" link v-for="item in items">
-                <v-list-item-action>
-                    <img class="mr-2" :src="$root.base_url+'/icons/'+item.icon">
-                </v-list-item-action>
-                <v-list-item-content>
-                    <v-list-item-title>{{item.name}}</v-list-item-title>
-                </v-list-item-content>
-            </v-list-item>
+        <v-list dense v-if="$settings.navigation">
+            <span v-for="child1 in $settings.navigation['header']">
+                 <v-list-group v-if="child1.childrens && child1.childrens.length > 0">
+                    <template v-slot:activator>
+                        <v-list-item-title><span @click.stop="redirect(child1.url)">{{child1.name}}</span></v-list-item-title>
+                    </template>
+                    <v-list-group sub-group no-action v-for="child2 in child1.childrens">
+                        <template v-slot:activator>
+                            <v-list-item-title>
+                                <span @click.stop="redirect(child2.link)">{{child2.name}}</span>
+                            </v-list-item-title>
+                        </template>
+                        <v-list-group  sub-group no-action v-for="child3 in child2.childrens">
+                            <template v-slot:activator>
+                                 <v-list-item-title>
+                                     <span @click.stop="redirect(child3.link)">{{child3.name}}</span>
+                                </v-list-item-title>
+                            </template>
+                              <v-list-item v-for="child4 in child3.childrens" @click="redirect(child4.link)">
+                                {{child4.name}}
+                             </v-list-item>
+                        </v-list-group>
+                    </v-list-group>
+                </v-list-group>
+                <v-list-item v-else @click="redirect(child1.url)">{{child1.name}}</v-list-item>
+            </span>
         </v-list>
     </v-navigation-drawer>
 </template>
 <script>
     export default {
-        props:['items', 'show_sidebar'],
-        data(){
-          return{
-              show:false,
-          }
-        },
-        watch:{
-            show_sidebar: function(){
-                this.show = this.show_sidebar;
-            }
-        },
-        mounted() {
-          this.show = this.show_sidebar;
-        },
-        methods:{
-            emit(value){
-                if(!value){
-                    this.$root.toggleSidebar(false);
-                }
-            }
-        }
+
     }
 </script>

@@ -256,7 +256,6 @@
                                                     @include('voyager::bread.partials.actions', ['action' => $action])
                                                 @endif
                                             @endforeach
-                                            <a href="{{url('/admin/products/'.$data->id.'/settings')}}" class="btn btn-sm btn-warning pull-right view">Edytuj pole nadruku</a>
                                         </td>
                                     </tr>
                                 @endforeach

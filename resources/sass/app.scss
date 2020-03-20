@@ -1,25 +1,51 @@
+@import "https://fonts.googleapis.com/css?family=Nunito:300,400,700,900&display=swap";
+@import "variables";
+$body-font-family: 'Nunito', sans-serif !important;
+$heading-font-family: 'Nunito', sans-serif !important;
+@import "../../node_modules/vuetify/src/styles/styles";
 
 @import "../../node_modules/vuetify/dist/vuetify.min.css";
-@import url('https://fonts.googleapis.com/css?family=Space+Mono&display=swap');
-@import "variables";
+
+.fade-enter-active, .fade-leave-active {
+  transition: opacity .3s;
+}
+.fade-enter, .fade-leave-to /* .fade-leave-active below version 2.1.8 */ {
+  opacity: 0;
+}
+body{
+  background-color: #f9f9f9;
+}
 .v-application{
+  .black{
+    background-color: $black-color !important;
+    border-color: $black-color !important;
+  }
+  .headline{
+    font-size: 1.3rem !important;
+  }
+  .display-1, .display-2, .display-3, .heading, .headline{
+    font-family: $primary-font !important;
+  }
+  font-family: $primary-font !important;
   width: 100vw;
   overflow-x: hidden;
-  h1,h2,h3,h4{
-    font-family: Oswald !important;
-  }
-  span, p, a, label{
-    font-family: 'Space Mono', monospace;
-  }
 }
 .container{
-  max-width: 90%;
+  max-width: 85%;
   margin: auto;
   padding: 0px;
 }
+.v-btn{
+  font-weight: unset;
+  text-transform: unset;
+}
+.v-btn.v-size--default{
+  font-size: 1rem;
+}
+
 @media screen and (min-width: 1200px){
   .container{
-    max-width: 90vw;
+    max-width: 85vw;
   }
 }
 @media screen and (min-width: 960px){
@@ -33,16 +59,26 @@
     max-width: 95%;
   }
 }
+.v-btn:not(.theme--dark){
+  color: $black-color;
+}
+.black--text{
+  span{
+    color: $black-color;
+  }
+}
 body{
   #app{
-    padding-top: 8px;
+    font-family: $primary-font;
     background-color: transparent !important;
   }
-  color:#222222;
+  color:$black-color;
   i,p,a,h1,h2,h3,h4,span{
-    color:#222222;
+    font-family: $primary-font !important;
+    color:$black-color;
   }
   button, a, p, div, span{
+    font-family: $primary-font !important;
     box-shadow: none !important;
   }
 }
@@ -51,6 +87,9 @@ body{
 }
 .h-100{
   height: 100% !important;
+}
+.light-grey{
+  background-color: $light-grey;
 }
 .empty-state{
   min-height: 200px;
@@ -62,10 +101,25 @@ body{
   width: 100%;
 }
 .give-me-space{
-  padding: 60px 0px;
+  padding: 20px 0px;
+}
+.product-overlay{
+  .v-overlay__content{
+    width: 100%;
+    height: 100%;
+  }
 }
 .my-border{
-  border: $my-border;
+  overflow: hidden;
+  border-radius: 32px;
+  border-bottom-right-radius: 90px;
+  @media screen and (max-width: 1000px){
+    border-radius: 16px;
+    border-bottom-right-radius: 60px;
+  }
+}
+.my-border-2{
+  border-radius: 16px !important;
 }
 .my-border-dark{
   border: $my-border-dark;
@@ -76,9 +130,8 @@ body{
     border-radius: 0px !important;
   }
 }
-.my-btn-border{
-  border: $my-border;
-  border-radius: 0px !important;
+.my-btn{
+  font-weight: unset !important;
 }
 .theme--light.v-btn:not(.v-btn--flat):not(.v-btn--text):not(.v-btn--outlined){
   background-color: transparent;
@@ -103,7 +156,7 @@ body{
   }
 }
 .text-muted{
-  opacity: 0.6;
+  opacity: 0.75;
 }
 .product{
   position: relative;
@@ -186,6 +239,20 @@ body{
     bottom: 0px;
     left: 0px;
   }
+}
+.nav-categories{
+  width: 100% !important;
+  .main-item{
+    font-size: 1.2rem !important;
+    font-weight: bold !important;
+  }
+  .sub-item{
+    font-size: 1rem;
+  }
+}
+.price{
+  font-size: 2.5rem;
+  font-weight: 200;
 }
 .price-crossed{
   text-decoration: line-through;
@@ -332,6 +399,9 @@ body{
   }
 }
 footer{
+  .row{
+    display: flex !important;
+  }
   @media screen and (max-width: 960px){
     text-align: center;
   }
@@ -344,20 +414,23 @@ footer{
     padding-left: 0px !important;
     width: 100%;
     display: flex;
+    flex-direction: column;
     flex-wrap: wrap;
-    justify-content: flex-end;
     @media screen and (max-width: 960px){
       justify-content: center;
     }
     li{
       padding: 10px;
+      padding-top: 0px !important;
       a{
         text-decoration: none !important;
-        text-transform: uppercase;
         font-weight: bold;
-        font-size: 1.2rem;
+        font-size: 1rem;
       }
     }
+  }
+  .my_footer{
+    flex-direction: row !important;
   }
 }
 @media screen and (max-width: 960px){
@@ -532,6 +605,15 @@ footer{
     }
   }
 }
+.left_navigation{
+  .v-input__slot{
+    border-radius: 50px !important;
+  }
+}
+.default-link{
+  text-decoration: none !important;
+  color: unset;
+}
 .slick-slider-holder{
   .slick-prev, .slick-next{
     display: none !important;
@@ -570,5 +652,44 @@ footer{
   }
   .arrow-right{
     right: -5px;
+  }
+}
+.no-validation{
+  .v-messages{
+    display: none !important;
+  }
+  .v-input__slot{
+    margin-bottom: 0px !important;
+  }
+  .v-text-field__details{
+    display: none !important;
+  }
+}
+.only-validation {
+  margin-bottom: 10px;
+  padding-top: 0px !important;
+  margin-top: 0px !important;
+  .v-input__slot{
+    display: none !important;
+  }
+}
+.my-nav{
+  .v-btn:not(.v-btn--icon){
+    padding: 0px 40px !important;
+  }
+  .v-btn--icon{
+    margin: 0px 15px;
+  }
+}
+.blured{
+  -webkit-filter: blur(3px);
+  -moz-filter: blur(3px);
+  -o-filter: blur(3px);
+  -ms-filter: blur(3px);
+  filter: blur(3px);
+}
+.shaped{
+  .v-input__slot{
+    border-radius: 50px !important;
   }
 }

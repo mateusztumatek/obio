@@ -3,21 +3,18 @@
         <h2 class="font-weight-light">{{$t('Wybierz sposób wysyłki')}}:</h2>
         <div class="row" >
             <div class="col-md-4" v-for="shipment in shipments">
-                <v-card :loading="loading" :color="(selected && selected.id == shipment.id)? 'primary' : null" ripple @click="selectShipment(shipment)">
-                    <v-card-title style="justify-content: space-between">
-                        <div>
-                            {{shipment.name}}  <span class="font-weight-light ml-3">{{shipment.price | toCurrency()}}</span>
-                        </div>
-                    </v-card-title>
-                    <v-card-text v-if="shipment.logo">
-                        <v-avatar tile size="100%">
-                            <img
-                                    style="object-fit: contain"
-                                    :src="$root.getSrc(shipment.logo)"
-                                    alt="Shipment logo"
-                            >
-                        </v-avatar>
-                    </v-card-text>
+                <v-card :class="{'elevation-4': selected && selected.id == shipment.id}" :loading="loading" :color="(selected && selected.id == shipment.id)? 'primary' : null" ripple @click="selectShipment(shipment)">
+                    <v-img
+                            class="white--text align-end"
+                            height="150px"
+                            :src="$root.getSrc(shipment.logo)"
+                    >
+                        <v-card-title style="position: relative; min-height: 50px">
+                            <v-overlay opacity="0.6" absolute>
+                                {{shipment.name}}  <span class="font-weight-light white--text ml-3">{{shipment.price | toCurrency()}}</span>
+                            </v-overlay>
+                        </v-card-title>
+                    </v-img>
                 </v-card>
             </div>
         </div>

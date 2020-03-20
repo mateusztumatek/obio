@@ -1,4 +1,4 @@
 @extends('layout.app')
 @section('content')
-    <order :cart="cart"></order>
+    <order :cart="$cart.cart"></order>
     @endsection

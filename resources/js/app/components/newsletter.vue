@@ -1,28 +1,29 @@
 <template>
-    <div>
+    <div class="newsletter">
         <v-form ref="newsletter_form" lazy-validation>
-            <div class="col-md-6 text-center" style="margin: auto">
+            <div class="col-12 py-0 text-right" style="margin: auto">
                 <v-text-field
                         :error="(errors && errors.email && errors.email.length > 0)? true : false"
                         :error-messages="errors.email"
+                        rounded
                         :rules="rules.email"  :loading="loading" prepend-icon="mdi-email-check-outline" v-model="subscriber.email" outlined style="border-width: 2px" dark :label="$t('Wpisz swoj adres email')"></v-text-field>
-                <v-checkbox
-                        style="display: flex; justify-content: center"
-                        class="mt-0"
-                        dense
-                        small
-                        tile
-                        :rules="rules.agree"
-                        dark
-                        v-for="agree in agrees"
-                        v-model="agree.value"
-                        :label="$t(agree.text)"
-                        :loading="loading"
-                ></v-checkbox>
+                <div v-for="agree in agrees" class="d-flex justify-end text-right">
+                    <v-checkbox
+                            class="mt-0 mb-2 no-validation"
+                            dense
+                            small
+                            rounded
+                            :rules="rules.agree"
+                            dark
+                            v-model="agree.value"
+                            :label="$t(agree.text)"
+                            :loading="loading"
+                    ></v-checkbox>
+                </div>
                 <div v-if="completed" >
                     <v-alert dark tile>{{$t('Zostałeś zapisany na listę naszych odbiorców')}}</v-alert>
                 </div>
-                <v-btn v-if="!completed" x-large class="my-border-dark" color="white" @click="send" tile :loading="loading" :disabled="completed">{{$t('Zapisz mnie na newsletter')}}</v-btn>
+                <v-btn v-if="!completed" x-large class="my-border-dark" color="white" @click="send" rounded :loading="loading" :disabled="completed">{{$t('Zapisz mnie na newsletter')}}</v-btn>
             </div>
         </v-form>
     </div>
@@ -80,7 +81,18 @@
     }
 </script>
 <style lang="scss">
-    .newsletter {
-
+    .newsletter{
+        .v-input--checkbox{
+            .v-label{
+                width: 80%;
+            }
+            .v-input__slot{
+                display: flex;
+                justify-content: flex-end;
+            }
+        }
+        .v-label{
+            text-align: right !important;
+        }
     }
 </style>

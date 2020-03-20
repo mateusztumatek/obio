@@ -1,37 +1,41 @@
 <template>
     <div class="row" style="justify-content: center">
-        <div class="col-md-7 contact_holder">
-            <v-form ref="contact_form">
-                <v-text-field
-                        class="my-text-field"
-                        solo
-                        v-model="contact.name"
-                        :loading="loading"
-                        :rules="rules.name"
-
-                        :label="$t('Twoje imię')"
-                ></v-text-field>
-                <v-text-field
-                        class="my-text-field"
-                        :loading="loading"
-                        solo
-                        v-model="contact.email"
-                        :rules="rules.email"
-                        :label="$t('Twój email')"
-                ></v-text-field>
-                <v-textarea
-                        class="my-text-field"
-                        :loading="loading"
-                        solo
-                        v-model="contact.message"
-                        :rules="rules.message"
-                        :label="$t('Wiadomość')"
-                ></v-textarea>
-            </v-form>
-        </div>
-
-        <div class="col-md-7 contact_holder">
-            <v-btn :loading="loading" class="my-button my-border w-100" x-large tile @click="sendMessage()">{{$t('Wyślij')}}</v-btn>
+        <div class="col-md-7 contact_holder" style="margin: auto">
+            <v-card class="elevation-5 my-border">
+                <v-card-text>
+                    <v-card-title>Formularz kontaktowy</v-card-title>
+                    <v-form ref="contact_form" v-if="!contact.sended">
+                        <v-text-field
+                                outlined
+                                rounded
+                                v-model="contact.name"
+                                :loading="loading"
+                                :rules="rules.name"
+                                :label="$t('Twoje imię')"
+                        ></v-text-field>
+                        <v-text-field
+                                :loading="loading"
+                                outlined
+                                rounded
+                                v-model="contact.email"
+                                :rules="rules.email"
+                                :label="$t('Twój email')"
+                        ></v-text-field>
+                        <v-textarea
+                                :loading="loading"
+                                outlined
+                                rounded
+                                v-model="contact.message"
+                                :rules="rules.message"
+                                :label="$t('Wiadomość')"
+                        ></v-textarea>
+                    </v-form>
+                    <div v-if="contact.sended" class="empty-state">
+                        <h3 class="display-1">Wiadomość wysłana</h3>
+                    </div>
+                    <v-btn  rounded :loading="loading" color="dark" dark height="50px" class="w-100" x-large @click="sendMessage()">{{$t('Wyślij')}}</v-btn>
+                </v-card-text>
+            </v-card>
         </div>
     </div>
 </template>
@@ -62,6 +66,7 @@
 
                     axios.post(this.$root.base_url+'/kontakt/wyslij', this.contact).then(response => {
                         this.loading = false;
+                        this.$set(this.contact, 'sended', true);
                     }).catch(e => {
                         this.loading = true;
                     })

@@ -4,14 +4,13 @@
             <div class="col-md-12">
                 <v-chip class="ma-1" v-for="size in sizes" :color="(selectedSize == size.value)? 'primary' : null" @click="selectedSize = size.value">{{size.value}}</v-chip>
             </div>
-            <div class="col-md-12 py-0">
+            <div class="col-md-6 col-sm-10 col-xs-12 py-0">
                 <number-input v-model="quantity"></number-input>
             </div>
-            <div class="col-auto">
-                <v-btn @click="addToCart" tile class="my-border"><img style="max-height: 18px" class="mr-2" :src="$root.url('/icons/cart.svg')"> Dodaj do koszyka</v-btn>
-            </div>
-            <div class="col-auto" v-if="(typeof showDesignerButton != 'undefined' && !showDesignerButton)? false : true">
-                <v-btn tile class="my-border" :href="product.creator_link"><img style="max-height: 18px" class="mr-2" :src="$root.url('/icons/edit.svg')">Przejdź do kreatora</v-btn>
+            <div class="row mx-0" style="width: 100%">
+                <div class="col-auto">
+                    <v-btn @click="addToCart" tile height="50px" color="black" depressed dark>Dodaj do koszyka</v-btn>
+                </div>
             </div>
             <div class="col-md-12" v-for="error in errors">
                 <v-alert type="error">
@@ -36,9 +35,7 @@
             }
         },
         mounted() {
-            this.sizes = this.product.attributes.filter(x => {
-                return x.attribute.name == 'Rozmiar';
-            })
+
         },
         methods:{
             addToCart(){

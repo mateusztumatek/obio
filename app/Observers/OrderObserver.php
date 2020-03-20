@@ -3,7 +3,9 @@
 namespace App\Observers;
 
 use App\Mail\OrderEmail;
-use App\Order;
+use App\Mail\OrderStatus;
+use App\Mail\OrderStatusMail;
+use App\Shop\Order;
 use Illuminate\Support\Facades\Mail;
 
 class OrderObserver
@@ -25,6 +27,11 @@ class OrderObserver
      * @param  \App\Order  $order
      * @return void
      */
+    public function updating(Order $order){
+        if($order->isDirty('status')){
+            Mail::to($order->address->email)->send(new OrderStatusMail($order));
+        }
+    }
     public function updated(Order $order)
     {
         //

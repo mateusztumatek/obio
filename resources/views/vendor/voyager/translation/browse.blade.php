@@ -16,7 +16,7 @@
         <div class="row">
             <div class="col-md-12">
                 <div class="panel panel-bordered">
-                    <div class="panel-body" id="app">
+                    <div class="panel-body" id="admin_app">
                         <translations :translations="{{json_encode($translations)}}" :keys="{{json_encode($keys)}}"></translations>
                     </div>
                 </div>

@@ -2,7 +2,7 @@
     <div class="errors">
         <transition-group name="slide-fade" mode="in-out">
             <div v-bind:key="key" v-for="error, key in errors" >
-                <v-alert :light="true" style="border-color: #222222 !important;" class="my-border" :color="(error.type == 'info')? 'primary' : 'accent'" tile :type="error.type" dismissible>
+                <v-alert :light="true" style="border-color: #222222 !important; border-radius: 50px" :color="(error.type == 'info')? 'primary' : 'accent'" :type="error.type" dismissible>
                     {{error.text}}
                 </v-alert>
             </div>
@@ -24,7 +24,6 @@
 
             })
             this.$root.$eventBus.$on('add_message', (data) => {
-                console.log('EMITED');
                 data.type = 'info';
                 this.errors.unshift(data);
                 this.resetErrors(data);

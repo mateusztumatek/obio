@@ -2,12 +2,14 @@
 
 namespace App\Http\Controllers;
 
-use App\Address;
-use App\Cart;
-use App\Order;
+use App\Shop\Code;
+use App\Shop\Product;
+use App\Shop\Address;
+use App\Shop\Cart;
+use App\Shop\Order;
 use App\Services\PayuHistory;
 use App\Services\PayuModel;
-use App\Shipment;
+use App\Shop\Shipment;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -18,8 +20,6 @@ use OpenPayU_Order;
 use App\Services\PayuPayment;
 class OrderController extends Controller
 {
-    protected $fillable = ['user_id', 'address_id', 'payment_type', 'shipping_id', 'notes', 'status', 'hash', 'amount', 'shipment_amount', 'payment_link', 'paid', 'tracking'];
-
     public function index(){
         $cart = Cart::getCart();
         if(count($cart->items) == 0) return redirect()->back()->withErrors(['Brak produktów w koszyku']);
@@ -43,32 +43,47 @@ class OrderController extends Controller
             $request->request->set('notes', $request->user['notes']);
         }
         $cart = Cart::getCart();
+        if($cart->code){
+            $code = Code::find($cart->code->id);
+            $cart->applyCode(null);
+            $cart->applyCode($code);
+            $cart_check = $cart->code->validate();
+            if($cart_check->error){
+                return response()->json($cart_check->errors, 400);
+            }
+        }
         $address = Address::create($request->user);
         $request->request->set('address_id', $address->id);
         $shipment = Shipment::find($request->shipment['id']);
         $request->request->set('shipping_id', $shipment->id);
-        $amount = $cart->price + $shipment->price;
+        if(($free_shipping_limit = setting('admin.free_shipping_limit')) && $free_shipping_limit != null && $cart->totalPrice >= $free_shipping_limit){
+            $shipment_price = 0;
+        }else{
+            $shipment_price = $shipment->price;
+        }
+        $amount = $cart->totalPrice + $shipment_price;
         $request->request->set('amount', $amount);
         $request->request->set('status', 'new');
         $request->request->set('hash', md5(Str::random(60)));
-        $request->request->set('shipment_amount', $shipment->price);
+        $request->request->set('shipment_amount', $shipment_price);
         $request->request->set('paid', false);
         $order = Order::create($request->all());
-        foreach ($cart->items as $item){
-            if($item->design){
-                $design_id = $item->design->id;
-            }else $design_id = null;
-            $price = $item->price;
-            $design_price = $item->total_price - $item->items_price;
-            $order->items()->create([
-                'order_id' => $order->id,
-                'product_id' => $item->id,
-                'design_id' => $design_id,
-                'quantity' => $item->quantity,
-                'price' => $price,
-                'design_price' => $design_price
+        if($cart->code){
+            $code->update([
+                'used' => $cart->code->used + 1
             ]);
         }
+        foreach ($cart->items as $item){
+            $price = $item->price;
+            $order->items()->create([
+                'product_id' => $item->id,
+                'quantity' => $item->quantity,
+                'price' => $price,
+                'attributes' => $item->attributes,
+                'designs' => $item->designs
+            ]);
+        }
+        Cart::reset();
         if($request->payment_type == 'payu'){
             $payu = new PayuPayment();
             $response = $payu->makePayment($order);
@@ -98,5 +113,22 @@ class OrderController extends Controller
                 }
             }
         }
+    }
+    public function reorder(Request $request){
+        try{
+            Cart::reset();
+            $cart = Cart::getCart();
+            $request->validate([
+                'order_id' => 'required|exists:orders,id'
+            ]);
+            $order = Order::find($request->order_id);
+            foreach ($order->items as $item){
+                $product = Product::find($item->product_id);
+                $cart->addItem($product, $item->quantity, $item->preview_image, $item->attributes, $item->link);
+            }
+        }catch(\Exception $e){
+            return redirect()->back()->withErrors('Nie udało się wykonać tej akcji');
+        }
+        return redirect()->to(route('orders.index'));
     }
 }

@@ -400,7 +400,6 @@
     }
     .v-expansion-panel{
         .v-expansion-panel-content__wrap{
-            font-family: $secondary-font !important;
             padding: 0px !important;
         }
         .v-expansion-panel-header{

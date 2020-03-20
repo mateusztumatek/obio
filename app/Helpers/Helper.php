@@ -7,6 +7,13 @@ use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\URL;
 
 class Helper{
+    public static function resolveUrl($url){
+        if(filter_var($url, FILTER_VALIDATE_URL)){
+            return $url;
+        }else{
+            return \url($url);
+        }
+    }
     public static function slugify($text) {
         // replace non letter or digits by -
         $text = preg_replace('~[^\\pL\d]+~u', '-', $text);
@@ -51,5 +58,20 @@ class Helper{
         }
         $temp = $temp.$temp_param;
         return \url('/'.$temp);
+    }
+
+
+    public static function formatBytes($bytes, $precision = 2) {
+        $units = array('B', 'KB', 'MB', 'GB', 'TB');
+
+        $bytes = max($bytes, 0);
+        $pow = floor(($bytes ? log($bytes) : 0) / log(1024));
+        $pow = min($pow, count($units) - 1);
+
+        // Uncomment one of the following alternatives
+        // $bytes /= pow(1024, $pow);
+        // $bytes /= (1 << (10 * $pow));
+
+        return round($bytes, $precision) . ' ' . $units[$pow];
     }
 }

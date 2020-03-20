@@ -2,22 +2,30 @@
 
 namespace App\Http\Controllers;
 
-use App\Attribute;
-use App\Category;
-use App\Product;
-use App\ProductAttribute;
+use App\Shop\Attribute;
+use App\Shop\Category;
+use App\Shop\Product;
+use App\Relations\ProductAttribute;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\App;
 
 class ProductController extends Controller
 {
-    public function index(Request $request, $slug = null){
+    public function index(Request $request, $slug = null, $slug2 = null, $slug3 = null){
         if($slug){
             $category = Category::where('url', $slug)->first();
             if(!$category) return back()->withErrors('Nie ma takiej kategorii');
         }
-        $attributes = Attribute::getAllAttributes();
-        $products = new Product();
+        if($slug2){
+            $category = Category::where('parent_id', $category->id)->where('url', $slug2)->first();
+            if(!$category) return back()->withErrors('Nie ma takiej kategorii');
+        }
+        if($slug3){
+            $category = Category::where('parent_id', $category->id)->where('url', $slug3)->first();
+            if(!$category) return back()->withErrors('Nie ma takiej kategorii');
+        }
+        $attributes = \App\Shop\Attribute::getAllAttributes();
+        $products = new \App\Shop\Product();
         if($request->get('attributes')){
             foreach ($request->get('attributes') as $key => $attr){
                 if($attr != null){
@@ -35,7 +43,9 @@ class ProductController extends Controller
             }
         }
         if(isset($category) && $category){
-            $products = $products->where('category_id', $category->id);
+            $products = $products->whereHas('categories', function ($q)use($category){
+                $q->where('category_id', $category->id);
+            });
             $category = $category->translate(App::getLocale(), 'pl');
         }
         if($request->price_to && $request->price_to != ''){
@@ -49,8 +59,9 @@ class ProductController extends Controller
         }else{
             $products = $products->orderBy('created_at', 'desc');
         }
-        $products = $products->paginate(20);
+        $products = $products->with('rates')->paginate(($request->limit)? $request->limit : 20);
 /*        $products = $products->translate();*/
+        if($request->ajax()) return response()->json($products);
         return view('products.index', compact('attributes', 'products', 'category'));
     }
     public function bounds(Request $request, $id){
@@ -66,7 +77,9 @@ class ProductController extends Controller
     public function show(Request $request, $slug){
         $product = Product::where('url', $slug)->first();
         $product = $product->translate(App::getLocale(), 'pl');
+        $attributes = $product->attributes;
+        $attributes = $attributes->groupBy('attribute.name');
         if(!$product) return back()->with(['message' => 'Produkt nie istnieje']);
-        return view('products.show', compact('product'));
+        return view('products.show', compact('product', 'attributes'));
     }
 }

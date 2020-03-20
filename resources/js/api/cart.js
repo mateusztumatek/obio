@@ -27,3 +27,11 @@ export function deleteCartItem(id){
         method: 'DELETE',
     })
 }
+
+export function applyCode(data) {
+    return request({
+        url: base_url+'/cart/code',
+        method: 'post',
+        data: data
+    })
+}

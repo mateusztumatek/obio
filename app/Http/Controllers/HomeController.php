@@ -29,13 +29,12 @@ class HomeController extends Controller
         }else{
             $design = null;
         }*/
-        $designs = Design::orderBy('created_at', 'desc')->take(10)->get();
         $banner = Pos::where('type', 'home_header')->first();
         $kafelki = HomeContent::where('type', 'photos')->get();
         if($banner) $banner = $banner->translate(App::getLocale(), 'pl');
         $brand_slides = HomeContent::where('type', 'brands')->get();
         $seo = HomeContent::where('type', 'seo')->first();
-        return view('home', compact('designs', 'banner', 'brand_slides', 'kafelki', 'seo'));
+        return view('home', compact('banner', 'brand_slides', 'kafelki', 'seo'));
     }
     public function settings(Request $request){
         $settings = Setting::all();
@@ -44,6 +43,9 @@ class HomeController extends Controller
     }
     public function contact(Request $request){
         return view('contact');
+    }
+    public function user(){
+        return view('auth.user');
     }
     public function sendMessage(Request $request){
         $request->validate([

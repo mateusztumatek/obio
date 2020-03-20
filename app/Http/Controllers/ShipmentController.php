@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Shipment;
+use App\Shop\Shipment;
 use Illuminate\Http\Request;
 
 class ShipmentController extends Controller

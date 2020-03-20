@@ -23,6 +23,8 @@
   },
   "dependencies": {
     "chart.js": "^2.9.2",
+    "grapesjs": "^0.16.2",
+    "grapesjs-preset-webpage": "^0.1.11",
     "jquery": "^3.4.1",
     "konva": "^4.0.16",
     "vue": "^2.6.10",

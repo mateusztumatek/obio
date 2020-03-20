@@ -1,0 +1,3 @@
+@php
+    dd($paginator);
+@endphp

@@ -89,7 +89,7 @@
                                     @endif
                                 </div>
                             @endforeach
-                                <div id="app" class="col-md-12">
+                                <div id="admin_app" class="col-md-12">
                                     <pattern-edit-add :data="{{($edit)? $dataTypeContent->data : 0}}"></pattern-edit-add>
                                 </div>
                         </div><!-- panel-body -->

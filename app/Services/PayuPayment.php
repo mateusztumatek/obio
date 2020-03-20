@@ -24,7 +24,7 @@ class PayuPayment{
         $order['description'] = 'New order '.$data->id;
         $order['currencyCode'] = 'PLN';
         $order['totalAmount'] = $data->amount;
-        $order['extOrderId'] = $data->id;
+        $order['extOrderId'] = 'obio_test'.$data->id;
 
         foreach ($data->items as $key => $item){
             $order['products'][$key]['name'] = $item->product->name;
@@ -51,7 +51,7 @@ class PayuPayment{
             $history = collect();
             $history->push(PayuHistory::create(Carbon::now(), 'Płatność utworzona', 'Płatność dla zamówienia '.$ord->extOrderId. 'utworzona w systemie PayU'));
             PayuModel::create([
-                'local_order_id' => $ord->extOrderId,
+                'local_order_id' => $data->id,
                 'payu_order_id' => $ord->orderId,
                 'currency' => $ord->currencyCode,
                 'totalAmount' => number_format(intval($ord->totalAmount)/100, 2),

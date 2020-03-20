@@ -28,14 +28,9 @@ class CreateProductsTable extends Migration
             $table->boolean('active')->default(true);
             $table->boolean('is_new');
             $table->integer('stock')->default(1);
-            $table->string('sku')->nullable();
-            $table->string('sku_parrent')->nullable();
-            $table->string('country')->default('pl');
-            $table->float('weight')->nullable();
             $table->integer('in_package')->nullable();
             $table->integer('orders_count')->default(0);
             $table->integer('views_count')->default(0);
-            $table->integer('external_id')->nullable();
             $table->text('keywords')->nullable();
             $table->timestamps();
         });

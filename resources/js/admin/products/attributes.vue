@@ -1,6 +1,5 @@
 <template>
     <div>
-        <input type="hidden" name="attributes" value="">
         <div class="col-md-12" style="margin-top: 30px">
             <h4>Atrybuty produktu: </h4>
         </div>
@@ -18,7 +17,12 @@
                     <div v-else>
                         <button @click="" type="button" @click="addAtribute(attribute)" class="btn btn-primary" >Dodaj ten atrybut</button>
                         <ul class="list-group">
-                            <li class="list-group-item" v-for="a,key in attributes[attribute.id]">{{a.value}}
+                            <li class="list-group-item" v-for="a,key in attributes[attribute.id]">
+                                <span v-if="a.type == 'text' || (a.attribute && a.attribute.type == 'text')">{{a.value}},</span>
+                                <span v-if="a.type == 'color' || (a.attribute && a.attribute.type == 'color')"><div style="min-width: 100px; min-height: 30px;" :style="{'background-color': a.value}"></div></span>
+                                <span v-if="a.type == 'bool' || (a.attribute && a.attribute.type == 'bool')"><span v-if="a.value == true">Tak</span><span v-else>Nie</span></span>
+                                <span v-if="a.additional_price">Dodatkowa cena: {{a.additional_price}}</span>
+                                <span v-if="a.default">Domyślny</span>
                             <button type="button" class="btn btn-danger" @click="deleteAttribute(key, attribute.id)">Usuń</button>
                             </li>
                         </ul>
@@ -33,16 +37,44 @@
                         <h5 class="modal-title">Atrybut {{added.name}}</h5>
                     </div>
                     <div class="modal-body">
-                        <div class="form-group">
+                        <div class="form-group" v-if="added.type == 'text'">
                             <label>Wpisz wartość</label>
-                            <input class="form-control" v-model="value">
+                            <input class="form-control" v-model="added.value">
+                        </div>
+                        <div class="form-group" v-if="added.type == 'color'">
+                            <label>Wybierz kolor</label>
+                            <input type="color" class="form-control" v-model="added.value">
+                        </div>
+                        <div class="form-group" v-if="added.type == 'bool'">
+                            <label>Wybierz {{added.name}}</label>
+                            <input type="checkbox" class="form-check-input" value="1" v-model="added.value">
+                        </div>
+                    </div>
+                    <div class="modal-body">
+                        <div class="form-group">
+                            <label>Atrubyt domyślny</label>
+                            <input class="form-check-input" type="checkbox" v-model="added.default" value="1">
+                        </div>
+                    </div>
+                    <div class="modal-body">
+                        <div class="form-group">
+                            <label>Dodatkowo naliczana cena</label>
+                            <input type="number" min="0" class="form-control" v-model="added.additional_price">
                         </div>
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-primary" @click="storeAttribute()">Dodaj</button>
-                        <button type="button" class="btn btn-secondary" data-dismiss="modal" @click="added = {}; value= ''">Zamknij</button>
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal" @click="added = {}">Zamknij</button>
                     </div>
                 </div>
+            </div>
+        </div>
+        <div style="display: none">
+            <div v-for="(item, index) in data">
+                <input type="hidden" :name="'attributes['+index+'][attribute_id]'" :value="item.attribute_id">
+                <input type="hidden" :name="'attributes['+index+'][value]'" :value="item.value">
+                <input type="hidden" :name="'attributes['+index+'][default]'" :value="item.default">
+                <input type="hidden" :name="'attributes['+index+'][additional_price]'" :value="item.additional_price">
             </div>
         </div>
     </div>
@@ -52,36 +84,26 @@
         props:['attributes_list', 'product'],
         data(){
             return{
-                value: '',
                 added: {},
                 attributes:{}
             }
         },
-        watch:{
-            attributes: {
-                deep: true,
-                handler: function(){
-                   /* this.attributes_list.forEach(item => {
-                        if(typeof this.attributes[item.id] == 'undefined' && item.is_boolean){
-                            this.attributes[item.id] = false;
-                        }
-                    })*/
-                    $('input[name = attributes]').val(JSON.stringify(this.attributes));
-                    /*this.$emit('attributes', this.attributes);*/
+        computed:{
+            data(){
+                var arr = [];
+                for (var i in this.attributes){
+                    this.attributes[i].forEach(item => {
+                        arr.push(item);
+                    })
                 }
+                return arr;
             }
         },
         mounted(){
           if (this.product){
               this.product.attributes.forEach(item => {
-                  if(!item.attribute.is_boolean){
-                      if(typeof this.attributes[item.attribute_id] != 'object'){
-                          this.attributes[item.attribute_id] = [];
-                      }
-                      this.attributes[item.attribute_id].push({value: item.value});
-                  }else{
-                      this.attributes[item.attribute_id] = item.value;
-                  }
+                 if(!this.attributes[item.attribute_id]) this.$set(this.attributes, item.attribute_id, []);
+                 this.attributes[item.attribute_id].push(item);
                  this.refresh();
               })
           }
@@ -94,14 +116,14 @@
             },
             addAtribute(attribute){
                 this.added = attribute;
+                this.added.attribute_id = attribute.id;
             },
             storeAttribute(){
                 if(!this.attributes[this.added.id] || typeof this.attributes[this.added.id] != 'object'){
                     this.attributes[this.added.id] = [];
                 }
-                this.attributes[this.added.id].push({value: this.value});
+                this.attributes[this.added.id].push(Object.assign({}, this.added));
                 this.refresh();
-                this.value = "";
                 this.added = {};
             },
             deleteAttribute(key, tab_id){

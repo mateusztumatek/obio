@@ -3,16 +3,23 @@ require('./bootstrap');
 window.Vue = require('vue');
 import {serialize} from "./utilies/helpers";
 import vuetify from './plugins/vuetify';
-import VueKonva from 'vue-konva'
 require('./custom');
-Vue.use(VueKonva);
+import Auth from './plugins/auth';
+import Cart from './plugins/cart'
+import Product from './plugins/product';
+import Settings from './plugins/settings';
 require('./RegisterComponents');
 import request from './utilies/Request';
 import {i18n} from "./plugins/i18n";
 import VueTheMask from 'vue-the-mask'
+import GlobalMixins from './global_mixins.js';
 Vue.use(VueTheMask);
 import Slick from 'vue-slick';
 Vue.prototype.$eventBus = new Vue();
+Vue.prototype.$user = new Vue(Auth);
+Vue.prototype.$product = new Vue(Product);
+Vue.prototype.$cart = new Vue(Cart);
+Vue.prototype.$settings = new Vue(Settings);
 Vue.filter('toCurrency', function (value) {
     if (typeof value !== "number") {
         return value;
@@ -24,7 +31,7 @@ Vue.filter('toCurrency', function (value) {
     });
     return formatter.format(value);
 });
-import {addToCart} from "./api/cart";
+Vue.mixin(GlobalMixins);
 
 const app = new Vue({
     el: '#app',
@@ -33,52 +40,36 @@ const app = new Vue({
     data(){
         return {
             contact:{},
-            settings:null,
             navigation: null,
             base_url,
             relative_url,
-            cartShow: false,
             showSidebar: false,
-            cart: null,
+            user: null,
             fab: false,
             isMobile: false,
+            showLayout: false,
+            loaded: false,
         }
     },
     mounted: function(){
+        setTimeout(() => {
+            this.loaded = true;
+        }, 50)
+        if(typeof user != 'undefined'){
+            this.setUser(user);
+        }
         this.checkMobile();
         this.base_url = base_url;
         this.relative_url = relative_url;
-        this.$eventBus.$on('updateCart', (cart) => {this.cart = cart});
-        this.$eventBus.$on('set_cart', (data) => {this.cart= data;})
-        this.getSettings();
+
+        this.$settings.getSettings();
         if(session_errors){
             session_errors.forEach(item => {
                 this.$eventBus.$emit('add_error', {text: item});
             })
         }
     },
-
     methods: {
-        getSettings(){
-            request({
-                url: '/settings',
-                method: 'get',
-            }).then(response => {
-                this.settings = response.settings;
-                this.navigation = response.navigation;
-            })
-        },
-        getSetting(key){
-            if(this.settings){
-                return this.settings.find(x => x.key == key).value;
-            }
-        },
-        addToCart(product_id, design, quantity, size, image = null, pattern_id = null){
-            addToCart({product_id: product_id, design: design, quantity: quantity, size: size, image: image, pattern_id: pattern_id}).then(response => {
-                this.$eventBus.$emit('set_cart', response);
-                this.$eventBus.$emit('add_message', {text: 'Poprawnie dodano przedmiot do koszyka'});
-            })
-        },
         toggleSidebar(value = null){
             if(value != null){
                 this.showSidebar = value;
@@ -97,8 +88,9 @@ const app = new Vue({
             this.isMobile = check;
             return check;
         },
-        updateInput(value, input_id){
-            console.log(value, input_id);
+        setUser(user){
+            this.user = user;
+            this.$user.setUser(user);
         },
         getSrc(src, params){
             if(params){
@@ -108,13 +100,8 @@ const app = new Vue({
             }
             return this.base_url+'/storage/'+src+'?'+query;
         },
-        toggleCart(value = null){
-            if(value != null){
-                this.cartShow = value;
-            }else this.cartShow = !this.cartShow;
-        },
+
         setField(value, fieldName){
-            console.log('FIELD', fieldName);
             $('*[name='+fieldName+']').val(value);
         }
     }

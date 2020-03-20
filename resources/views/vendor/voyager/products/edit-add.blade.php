@@ -23,7 +23,6 @@
     <div class="page-content edit-add container-fluid">
         <div class="row">
             <div class="col-md-12">
-
                 <div class="panel panel-bordered">
                     <!-- form start -->
                     <form role="form"
@@ -38,7 +37,7 @@
                     <!-- CSRF TOKEN -->
                         {{ csrf_field() }}
 
-                        <div class="panel-body">
+                        <div class="panel-body" v-show="$product.product.tab == 'Produkt'">
 
                             @if (count($errors) > 0)
                                 <div class="alert alert-danger">
@@ -89,9 +88,40 @@
                                     @endif
                                 </div>
                             @endforeach
-                                <div id="app">
-                                    <products-attributes @if($edit) :product="{{json_encode($dataTypeContent->load('attributes'))}}" @endif @attributes="setInputValue($event, 'attributes')" :attributes_list="{{json_encode(\App\Attribute::all())}}"></products-attributes>
+                                <div id="admin_app">
+                                    <div>
+                                        <categories-picker @if($edit) :data="{{$dataTypeContent->categories}}" @endif :categories="{{\App\Shop\Category::all()}}"></categories-picker>
+                                    </div>
+                                    <div>
+                                        <div class="col-md-12">
+                                            <div class="form-check">
+                                                <input type="checkbox" class="form-check-input" @if($dataTypeContent->is_printable) checked @endif name="is_printable">
+                                                <label class="form-check-label" >Czy produkt ma miec możliwość znakowania?</label>
+                                            </div>
+                                            <div class="form-group">
+                                                @php
+                                                    $dat = json_decode($dataTypeContent->formats);
+                                                    if(!$dat) $dat = array();
+                                                @endphp
+                                                <label>Wybierz formaty plików</label>
+                                                <select name="formats[]" multiple class="form-control">
+                                                    <option value=".pdf" @if(in_array('.pdf', $dat)) selected @endif>PDF</option>
+                                                    <option value="image/*" @if(in_array('image/*', $dat)) selected @endif>Zdjęcie</option>
+                                                    <option value=".csv" @if(in_array('.csv', $dat)) selected @endif>CSV</option>
+                                                    <option value=".cdr" @if(in_array('.cdr', $dat)) selected @endif>CDR</option>
+                                                    <option value=".ai" @if(in_array('.ai', $dat)) selected @endif>Illustrator</option>
+                                                    <option value=".psd" @if(in_array('.psd', $dat)) selected @endif>Photoshop</option>
+                                                </select>
+                                                {{--<div class="form-group">
+                                                    <label>Dodatkowa cena za znakowanie</label>
+                                                    <input class="form-control" name="print_price" type="number" min="0">
+                                                </div>--}}
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <products-attributes @if($edit) :product="{{json_encode($dataTypeContent->load('attributes'))}}" @endif @attributes="setInputValue($event, 'attributes')" :attributes_list="{{json_encode(\App\Shop\Attribute::all())}}"></products-attributes>
                                 </div>
+
                         </div><!-- panel-body -->
                         <div class="panel-footer">
                             @section('submit-buttons')
