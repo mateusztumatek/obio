@@ -10,7 +10,7 @@
                             <h2 class="font-weight-light w-100">Zakupione produkty: </h2>
                         </div>
                         @foreach($order->items as $item)
-                            <div class="col-md-4">
+                            <div class="col-xl-4 col-lg-6 col-md-6 col-sm-12">
                                 <v-card>
                                     <v-img src="{{url('/storage/'.$item->product->getImages()[0])}}" height="150px"></v-img>
                                     <v-card-title style="font-size: 1.1rem;">{{$item->product->name}} <br> Ilość: {{$item->quantity}}</v-card-title>
@@ -57,6 +57,9 @@
                                                 <p>Wymiary: {{$design->width}} x {{$design->height}}</p>
                                                     @endif
                                                 <p>Rozmiar pliku: {{\App\Helpers\Helper::formatBytes($design->size)}}</p>
+                                                @if(property_exists($design, 'comment') && $design->comment != '')
+                                                    <p>Komentarz do tego pliku: {{$design->comment}}</p>
+                                                    @endif
                                                 <div class="mt-2">
                                                     <v-btn download href="{{url('/storage/'.$design->file)}}" small color="primary" depressed rounded>Pobierz projekt</v-btn>
                                                 </div>
@@ -115,6 +118,10 @@
                             <tr>
                                 <td>Płatność:</td>
                                 <td>{{$order->payment_type}}</td>
+                            </tr>
+                            <tr>
+                                <td>Status:</td>
+                                <td><v-chip class="lighten-3" color="{{$order->status_color}}">{{$order->status_slug}}</v-chip></td>
                             </tr>
                             @if($order->payment_link)
                                 <tr>

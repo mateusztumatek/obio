@@ -11,42 +11,70 @@ class SeedProductsTable extends Seeder
      */
     public function run()
     {
+        /*'desc', 'name', 'images', 'main_image', 'orders_count','views_count', 'data', 'external_id', 'short_desc', 'url', 'page_title', 'page_description', 'price', 'price_sellout', 'active', 'is_new', 'attachments', 'stock', 'sku', 'country', 'sku_parrent', 'weight', 'in_package', 'baselinker_id', 'keywords', 'category_id', 'formats', 'is_printable'*/
+
         $faker = \Faker\Factory::create();
-
-        $attributes = ['Rozmiar' => ['xs', 's', 'm', 'l', 'xl'], 'Marka' => ['Tee Jays', 'P Sock', 'Puma', 'Adidas', 'Nike'], 'Materiał' => ['Bawełna 100%', 'Bawełna 80% / Poliester 20%', 'Poliester 100%'], 'Z daszkiem' => ['1', '0'], 'Typ szycia' => ['5 Panelowa', '6 Panelowa', 'Całkowita'], 'Kolor' => ['Zielony', 'Czarny', 'Czerwony', 'Niebieski', 'Różowy', 'Żółty', 'Pomarańczowy']];
-        for($i = 0; $i<100; $i++){
-
-            $name = $faker->name. ' '. $faker->colorName;
-            $url = \App\Helpers\Helper::slugify($name);
-            $price = mt_rand (10*10, 80*10) / 10;
-            $category = \App\Category::inRandomOrder()->first();
-            (rand(0, 10) > 8)? $price_sellout = $price - 2 : $price_sellout = null;
-            $product = \App\Product::create([
-                'desc' => $faker->randomHtml(2),
-                'name' => name,
-                'images' => null,
-                'main_image' => 'fwa',
-                'short_desc' => $faker->text(120),
-                'url' => $url,
-                'page_title' => $name,
-                'page_description' => $name.' '.$faker->text(200),
-                'price' => $price,
-                'price_sellout' => $price_sellout,
-                'active' => true,
-                'is_new' => rand(0,1),
-                'stock' => 400,
-                'country' => 'PL',
-                'weight' => '0,2',
-                'category_id' => $category->id
-            ]);
-            foreach ($attributes as $key => $a){
-                $attribute = \App\Attribute::where('name', $key)->first();
-                if($attribute){
-                    \App\ProductAttribute::create([
-                        'product_id', $product->id,
-                        'attribute_id' => $attribute->id,
-                        'value' => $a[rand(0, count($a) - 1)],
+        $images = scandir(storage_path('/app/public/products'));
+        $formats = collect(['.pdf', 'image/*', '.csv', '.cdr']);
+        array_splice($images, 0, 2);
+        $images = array_map(function ($item){
+            return 'products/'.$item;
+        }, $images);
+        $images = collect($images);
+        for ($i = 0; $i<200; $i++){
+            $attributes = \App\Shop\Attribute::inRandomOrder()->take(3)->get();
+            $attributes = \App\Shop\Attribute::inRandomOrder()->take(3)->get();
+            $data = [];
+            $data['name'] = $faker->name;
+            $data['desc'] = $faker->realText(300);
+            $data['images'] = $images->random(3)->toJson();
+            $data['main_image'] = $images->random(1)[0];
+            $data['short_desc'] = $data['desc'];
+            $data['url'] = \Illuminate\Support\Str::slug($data['name']);
+            $data['page_title'] = $data['name'];
+            $data['page_description'] = $data['name'];
+            $data['price'] = floatval(mt_rand (1*10, 200*10) / 10);
+            $data['price_sellout'] = (rand(0,4) == 2)? $data['price'] = $data['price'] - $data['price'] / 3 : null;
+            $data['active'] = true;
+            $data['is_new'] = (rand(0,3) == 2)? true : false;
+            $data['stock'] = 1;
+            $data['formats'] = $formats->random(2)->toJson();
+            $data['is_printable'] = rand(0,1 == 1);
+            $product = \App\Shop\Product::create($data);
+            $categories = \App\Shop\Category::inRandomOrder()->take(5)->get();
+            $categories = $categories->map(function ($item){
+                return $item->id;
+            });
+            $product->categories()->sync($categories);
+            foreach ($attributes as $a){
+                if($a->type == 'bool'){
+                    $product->attributes()->create([
+                        'attribute_id' => $a->id,
+                        'value' => 1,
+                        'default' => rand(0,1) == 1,
+                        'additional_price' => (rand(0,1) == 1)? floatval(mt_rand (1*10, 10*10) / 10) : null
                     ]);
+                }
+                if($a->type == 'text'){
+                    for($y = 0; $y < 3; $y++){
+                        $product->attributes()->create([
+                            'attribute_id' => $a->id,
+                            'value' => $faker->word,
+                            'default' => ($y == 0)? true : false,
+                            'additional_price' => (rand(0,1) == 1)? floatval(mt_rand (1*10, 10*10) / 10) : null
+                        ]);
+                    }
+                }
+                if($a->type == 'color'){
+                    for($y = 0; $y < 3; $y++){
+                        $color = \App\Relations\ColorGroup::inRandomOrder()->first();
+                        $product->attributes()->create([
+                            'attribute_id' => $a->id,
+                            'value' => $color->id,
+                            'default' => ($y == 0)? true : false,
+                            'additional_price' => (rand(0,1) == 1)? floatval(mt_rand (1*10, 10*10) / 10) : null
+                        ]);
+                    }
                 }
             }
         }

@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Services;
+use App\Faq;
 use App\HomeContent;
 use App\Pos;
 use App\Shop\Category;
@@ -54,5 +55,8 @@ class AppService {
     }
     public static function displaySlider(){
         return request()->route()->getName() == 'home';
+    }
+    public static function getFaq(){
+        return Faq::all()->groupBy('category');
     }
 }

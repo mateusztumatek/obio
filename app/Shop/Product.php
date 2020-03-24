@@ -136,4 +136,13 @@ class Product extends Model
         $pr = new Product();
         return $pr->sortable;
     }
+    public function getProposed(){
+        $t = $this;
+        return Product::whereHas('categories', function ($q)use($t){
+            foreach ($t->categories as $key => $c){
+                if($key == 0) $q->where('category_id', $c->id);
+                else $q->orWhere('category_id', $c->id);
+            }
+        })->orderBy('views_count')->where('id', '!=', $this->id)->take(5)->get();
+    }
 }

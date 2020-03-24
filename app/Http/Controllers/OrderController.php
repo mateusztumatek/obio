@@ -75,6 +75,10 @@ class OrderController extends Controller
         }
         foreach ($cart->items as $item){
             $price = $item->price;
+            $product = Product::find($item->id);
+            $product->update([
+                'orders_count' => $product->orders_count + 1
+            ]);
             $order->items()->create([
                 'product_id' => $item->id,
                 'quantity' => $item->quantity,
@@ -83,7 +87,7 @@ class OrderController extends Controller
                 'designs' => $item->designs
             ]);
         }
-        Cart::reset();
+        /*Cart::reset();*/
         if($request->payment_type == 'payu'){
             $payu = new PayuPayment();
             $response = $payu->makePayment($order);
@@ -98,7 +102,7 @@ class OrderController extends Controller
     }
     public function show(Request $request, $hash){
         $order = Order::with('items', 'address', 'payuPayment')->where('hash', $hash)->first();
-        if(!$order) return back()->withErrors(['Nie ma takiego zamówienia']);
+        if(!$order) return redirect()->route('home')->withErrors(['Nie ma takiego zamówienia']);
         if($request->ajax()) return response()->json($order);
         return view('order.show', compact('order'));
     }

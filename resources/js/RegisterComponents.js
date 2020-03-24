@@ -19,7 +19,7 @@ Vue.component('newsletter', require('./app/components/newsletter').default);
 Vue.component('color-picker', require('./app/components/inputs/color-picker').default);
 Vue.component('upload-progress', require('./app/components/upload-progress').default);
 Vue.component('rate-component', require('./app/components/rate-component').default);
-
+Vue.component('zoom-image', require('./app/components/zoom-image').default);
 
 Vue.filter('prettyBytes', function (num) {
     // jacked from: https://github.com/sindresorhus/pretty-bytes
@@ -52,3 +52,50 @@ Vue.filter('striphtml', function (value) {
     var text = div.textContent || div.innerText || "";
     return text;
 });
+// Register a global custom directive called `v-focus`
+var appendElement = (element, bg) => {
+    var child = document.createElement('span');
+    child.addEventListener('click', (el) => {
+        el.preventDefault();
+        el.stopPropagation();
+        Vue.prototype.$settings.setZoomImage(bg);
+    });
+    child.classList.add('zoom-trigger');
+    child.setAttribute('data-img', bg);
+    element.appendChild(child);
+};
+Vue.directive('zoomable', {
+    update: function(el){
+        setTimeout(() => {
+            var background = null;
+            $(el).children().each((index, item) => {
+                if($(item).css('background-image') != 'none'){
+                    background = $(item).css('background-image').replace(/^url\(['"](.+)['"]\)/, '$1');
+                }
+            });
+            if(background == null){
+                if($(el).find('img').length > 0){
+                    background = $(el).find('img').attr('src');
+                }
+            }
+            if(background) appendElement(el, background);
+        }, 600)
+    },
+    inserted: function (el) {
+        setTimeout(() => {
+            var background = null;
+            $(el).children().each((index, item) => {
+                if($(item).css('background-image') != 'none'){
+                    background = $(item).css('background-image').replace(/^url\(['"](.+)['"]\)/, '$1');
+                }
+            });
+            if(background == null){
+                if($(el).find('img').length > 0){
+                    background = $(el).find('img').attr('src');
+                }
+            }
+            if(background) appendElement(el, background);
+        }, 600)
+
+    }
+})

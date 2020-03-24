@@ -23,7 +23,6 @@
                 this.value = 0;
             })
             this.$root.$eventBus.$on('uploadingProgress', (value) => {
-                console.log('PROGRESS', value);
                 this.value = value;
                 if(this.value == 100) this.uploading = false;
             })

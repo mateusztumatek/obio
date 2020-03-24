@@ -134,7 +134,7 @@
                                     <!--<![endif]-->
                                     <div align="center" class="img-container center autowidth" style="padding-right: 5px;padding-left: 5px;">
                                         <!--[if mso]><table width="100%" cellpadding="0" cellspacing="0" border="0"><tr style="line-height:0px"><td style="padding-right: 5px;padding-left: 5px;" align="center"><![endif]-->
-                                        <div style="font-size:1px;line-height:5px"> </div><a href="#" tabindex="-1" target="_blank"> <img align="center" alt="Logo" border="0" class="center autowidth" src="{{url('/emails/logo.png')}}" style="text-decoration: none; -ms-interpolation-mode: bicubic; height: auto; border: none; width: 100%; max-width: 320px; display: block;" title="Logo" width="320"/></a>
+                                        <div style="font-size:1px;line-height:5px"> </div><a href="#" tabindex="-1" target="_blank"> <img align="center" alt="Logo" border="0" class="center autowidth" src="{{url('/storage/'.setting('site.logo'))}}" style="text-decoration: none; -ms-interpolation-mode: bicubic; height: auto; border: none; width: 100%; max-width: 320px; display: block;" title="Logo" width="320"/></a>
                                         <div style="font-size:1px;line-height:5px"> </div>
                                         <!--[if mso]></td></tr></table><![endif]-->
                                     </div>

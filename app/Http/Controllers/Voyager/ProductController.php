@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Voyager;
 
+use App\Relations\ColorGroup;
 use App\Shop\Attribute;
 use App\Helpers\Helper;
 use App\Http\Controllers\Voyager\VoyagerBaseController;
@@ -56,5 +57,8 @@ class ProductController extends VoyagerBaseController
     {
         $product = Product::find($id);
         return redirect($product->getLink());
+    }
+    public function colors(){
+        return response()->json(ColorGroup::all());
     }
 }

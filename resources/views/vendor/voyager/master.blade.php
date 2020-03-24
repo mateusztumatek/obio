@@ -103,6 +103,10 @@ if (\Illuminate\Support\Str::startsWith(Auth::user()->avatar, 'http://') || \Ill
             })();
         </script>
         <!-- Main Content -->
+        <form action="{{url('/admin/clear_cache')}}" method="POST">
+            @CSRF
+            <button style="position: fixed; right: 100px; top: 8px; z-index: 10000" class="btn btn-primary">Wyczyść cache</button>
+        </form>
         <div class="container-fluid">
             <div class="side-body padding-top">
                 @yield('page_header')

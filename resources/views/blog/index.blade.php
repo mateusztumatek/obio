@@ -1,4 +1,10 @@
 @extends('layout.app')
+@section('title')
+    Blog sklepu {{config('app.name')}}
+    @endsection
+@section('description')
+    Blog sklepu {{config('app.name')}}
+    @endsection
 @section('content')
     <div class="container">
         <div class="row" v-cloak>

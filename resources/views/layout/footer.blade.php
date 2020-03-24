@@ -1,9 +1,9 @@
 <footer>
-    <div class="give-me-space">
+    <div class="give-me-space" itemscope="itemscope" itemtype="https://schema.org/LocalBusiness">
         <div class="container">
             <div class="row">
                 <div class="col-md-4">
-                    <v-img src="{{url('/storage/'.setting('site.logo_white'))}}" width="250px" class="mb-3"></v-img>
+                    <v-img itemprop="image" src="{{url('/storage/'.setting('site.logo_white'))}}" width="250px" class="mb-3"></v-img>
                     {!! setting('site.footer') !!}
                 </div>
                 <div class="col-md-5 d-flex">
@@ -23,6 +23,12 @@
                             <a href="{{url('/regulamin')}}" class="white--text default-link">Regulamin</a>
                         </div>
                     </div>
+                </div>
+                <div style="display: none">
+                    <meta itemprop="name" content="{{setting('seo.name')}}">
+                    <meta itemprop="address" content="{{setting('seo.address')}}">
+                    <meta itemprop="telephone" content="{{setting('seo.telephone')}}">
+                    <meta itemprop="openingHours" content="{{setting('seo.openingHours')}}">
                 </div>
             </div>
         </div>

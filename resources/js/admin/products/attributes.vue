@@ -19,7 +19,9 @@
                         <ul class="list-group">
                             <li class="list-group-item" v-for="a,key in attributes[attribute.id]">
                                 <span v-if="a.type == 'text' || (a.attribute && a.attribute.type == 'text')">{{a.value}},</span>
-                                <span v-if="a.type == 'color' || (a.attribute && a.attribute.type == 'color')"><div style="min-width: 100px; min-height: 30px;" :style="{'background-color': a.value}"></div></span>
+                                <span v-if="a.type == 'color' || (a.attribute && a.attribute.type == 'color')">
+                                    {{getColorById(a.value)}}
+                                </span>
                                 <span v-if="a.type == 'bool' || (a.attribute && a.attribute.type == 'bool')"><span v-if="a.value == true">Tak</span><span v-else>Nie</span></span>
                                 <span v-if="a.additional_price">Dodatkowa cena: {{a.additional_price}}</span>
                                 <span v-if="a.default">Domyślny</span>
@@ -43,7 +45,9 @@
                         </div>
                         <div class="form-group" v-if="added.type == 'color'">
                             <label>Wybierz kolor</label>
-                            <input type="color" class="form-control" v-model="added.value">
+                            <div class="colors">
+                                <div :class="{'active' : added.value == item.id}" class="color" @click="$set(added, 'value', item.id)" :style="{'background-color': item.hex}" v-for="item in colors"></div>
+                            </div>
                         </div>
                         <div class="form-group" v-if="added.type == 'bool'">
                             <label>Wybierz {{added.name}}</label>
@@ -85,7 +89,8 @@
         data(){
             return{
                 added: {},
-                attributes:{}
+                attributes:{},
+                colors:[],
             }
         },
         computed:{
@@ -100,6 +105,7 @@
             }
         },
         mounted(){
+            this.getColors();
           if (this.product){
               this.product.attributes.forEach(item => {
                  if(!this.attributes[item.attribute_id]) this.$set(this.attributes, item.attribute_id, []);
@@ -109,6 +115,11 @@
           }
         },
         methods:{
+            getColors(){
+                axios.get(this.$root.base_url+'/admin/colors').then(({data}) => {
+                    this.colors = data;
+                })
+            },
             refresh(){
                 var tmp = this.attributes;
                 this.attributes = {};
@@ -131,12 +142,31 @@
                 temp.splice(key, 1);
                 Vue.set(this.attributes, tab_id, temp);
                 this.refresh();
+            },
+            getColorById(id){
+                var item= this.colors.find(x => x.id == id);
+                if(!item) return 'Nie znaleziono';
+                return item.name
             }
         }
 
     }
 </script>
 <style lang="scss">
+    .color{
+        position: relative;
+        &:after{
+            content:"" !important;
+            width: 20px !important;
+            height: 20px !important;
+            border-radius: 100% !important;
+            position: absolute !important;
+            right: -5px !important;
+            top: -5px !important;
+            border: 1px solid white;
+            background-color: black !important;
+        }
+    }
     .modal{
         background-color: rgba(0,0,0,0.3);
     }

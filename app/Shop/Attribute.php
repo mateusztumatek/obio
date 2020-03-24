@@ -2,13 +2,14 @@
 
 namespace App\Shop;
 
+use App\Relations\ColorGroup;
 use Illuminate\Database\Eloquent\Model;
 use TCG\Voyager\Traits\Translatable;
 
 class Attribute extends Model
 {
     use Translatable;
-    protected $fillable = ['name', 'icon', 'is_boolean'];
+    protected $fillable = ['name', 'icon', 'type'];
     protected $translatable = ['name'];
 
     public function product_attributes(){

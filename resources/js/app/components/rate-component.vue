@@ -32,7 +32,7 @@
                             </v-list-item-content>
                             <v-list-item-action>
                                 <v-rating :value="rate.rate" background-color="grey" half-increments readonly color="primary" ></v-rating>
-                                <v-btn @click="deleteRate(rate)" v-if="$root.user && $root.user.id == rate.user_id" color="red" depressed small dark>Usuń ocenę</v-btn>
+                                <v-btn :x-small="$vuetify.breakpoint.smAndDown" @click="deleteRate(rate)" v-if="$root.user && $root.user.id == rate.user_id" color="red" depressed dark>Usuń ocenę</v-btn>
                             </v-list-item-action>
                         </v-list-item>
                     </v-list>
@@ -120,6 +120,14 @@
     .v-rating{
         .v-icon{
             padding: 3px;
+            @media screen and (max-width: 1200px){
+                padding: 1px !important;
+            }
+            &:before{
+                @media screen and(max-width: 1200px){
+                    font-size: 0.8rem !important;
+                }
+            }
         }
         .v-icon{
             &:first-of-type{
@@ -135,4 +143,5 @@
             }
         }
     }
+
 </style>

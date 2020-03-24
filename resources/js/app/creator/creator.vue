@@ -255,7 +255,6 @@
                         var product_data = this.product.data;
                     }
 
-                    console.log(product_data);
                     setTimeout(() => {
                         this.$set(this, 'texts', data);
                         this.openingDesign = false;
@@ -274,7 +273,6 @@
         methods:{
             reInit(){
                 setTimeout(() => {
-                    console.log('SLICK', this.$refs.slick);
                     if(typeof this.$refs.slick.next == 'function') this.$refs.slick.next();
                     this.$nextTick(() => {
                         if(typeof this.$refs.slick.reSlick == 'function') this.$refs.slick.reSlick();

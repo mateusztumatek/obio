@@ -6,7 +6,7 @@ $(document).ready(() => {
        }
     })
     $('.description-holder').each((index, item) => {
-        var button = $('<button type="button" class="expand_description_button">Rozwiń</button>');
+        var button = $('<button type="button" class="expand_description_button my-btn v-btn--depressed v-btn--flat v-btn--outlined v-btn--rounded theme--dark v-size--default black--text">Rozwiń</button>');
         button.on('click', function () {
             if(!$(this).parent().hasClass('description-expand')){
                 $(this).parent().addClass('description-expand');
@@ -22,6 +22,7 @@ $(document).ready(() => {
     $('.seo-trigger').on('click', function () {
         $(this).parent().addClass('seo-active');
     })
+    $('.v-responsive__content')
     $('.category-slider').slick({
         dots: false,
         infinite: false,
@@ -68,7 +69,6 @@ $(document).ready(() => {
             }
         }
     })
-
 })
 
 window.initColorSlider = () => {

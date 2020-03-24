@@ -29,6 +29,11 @@ Route::group(['prefix' => $locale], function (){
         Route::get('products/{id}/settings', 'Voyager\ProductController@settings');
         Route::get('/tlumaczenia', 'Voyager\TranslateController@index')->name('tlumaczenia.index');
         Route::post('/tlumaczenia', 'Voyager\TranslateController@store');
+        Route::get('/colors', 'Voyager\ProductController@colors');
+        Route::post('/clear_cache', function (){
+            \Illuminate\Support\Facades\Artisan::call('cache:clear');
+            return back()->with(['message' => 'Wyczyszczono cache poprawnie']);
+        });
     });
 
     Route::post('upload/{path}', 'UploadController@upload');
@@ -52,6 +57,7 @@ Route::group(['prefix' => $locale], function (){
     Route::resource('shipments', 'ShipmentController');
     Route::resource('/orders', 'OrderController');
 
+    Route::get('/color_groups', 'HomeController@colors');
     Route::get('/settings', 'HomeController@settings');
 
     Route::post('/kontakt/wyslij', 'HomeController@sendMessage');
@@ -66,7 +72,7 @@ Route::group(['prefix' => $locale], function (){
     Route::resource('/rates', 'RateController');
     Route::get('/blog/{url}', 'BlogController@show')->name('blogs.show');
     Route::resource('blog', 'BlogController');
-
     Route::get('{slug}', 'PageController@show');
+
 });
 

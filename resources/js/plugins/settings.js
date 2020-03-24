@@ -7,9 +7,25 @@ export default {
             navigation: null,
             activeCategory: null,
             sidebar: false,
+            colors:[],
+            colors_init: false,
+            zoomImage: null,
+            showZoom: false,
         }
     },
     methods:{
+        setZoomImage(image){
+              this.zoomImage = image;
+              this.showZoom = true;
+        },
+        getColors(){
+            if(!this.colors_init){
+                axios.get('/color_groups').then(({data}) => {
+                    this.colors = data;
+                })
+                this.colors_init = true;
+            }
+        },
         setActiveCategory(cat){
             this.activeCategory = cat;
         },
@@ -36,5 +52,10 @@ export default {
                 return this.settings.find(x => x.key == key).value;
             }
         },
+        resolveColor(id){
+            var item = this.colors.find(x => x.id == id);
+            if(!item) return {}
+            return item;
+        }
     }
 }

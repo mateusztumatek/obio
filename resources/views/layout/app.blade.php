@@ -16,6 +16,7 @@
         [v-cloak]{
             transition: all 300ms;
             opacity: 0;
+            min-height: 650px;
         }
     </style>
     <link rel="canonical" href="@yield('cannonical', \Illuminate\Support\Facades\Request::fullUrl())" />
@@ -59,7 +60,10 @@
     @include('layout.sidebar')
     <cart-component :show="$cart.cartShow"></cart-component>
     <designs-holder></designs-holder>
+    <v-overlay @click="$cart.toggleCart(false)" v-if="$cart.cart && $cart.cartShow"></v-overlay>
+    @include('products.proposed')
     <errors></errors>
+    <zoom-image></zoom-image>
   {{--  <v-speed-dial
             class="ml-2"
             v-model="fab"

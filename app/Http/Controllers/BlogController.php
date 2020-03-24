@@ -14,6 +14,7 @@ class BlogController extends Controller
 
     public function show(Request $request, $url){
         $blog = Blog::where('url', $url)->with('rates')->first();
+        if(!$blog) return back()->withErrors('Nie ma takiego postu');
         $blogs = Blog::latest()->take(5)->get();
         return view('blog.show', compact('blog', 'blogs'));
     }

@@ -106,7 +106,6 @@
                 this.temp.height = this.temp.height / this.rate;
                 this.temp.x = this.temp.x/ this.rate;
                 this.temp.y = this.temp.y/ this.rate;
-                console.log(this.temp);
                 this.setImage(this.$root.getSrc(this.configImage.image_src), {width: this.configImage.width, height: this.configImage.height});
 
                 setTimeout(() => {

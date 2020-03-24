@@ -6,8 +6,10 @@ use App\Shop\Attribute;
 use App\Shop\Category;
 use App\Shop\Product;
 use App\Relations\ProductAttribute;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\App;
+use Illuminate\Support\Facades\Cache;
 
 class ProductController extends Controller
 {
@@ -24,7 +26,12 @@ class ProductController extends Controller
             $category = Category::where('parent_id', $category->id)->where('url', $slug3)->first();
             if(!$category) return back()->withErrors('Nie ma takiej kategorii');
         }
-        $attributes = \App\Shop\Attribute::getAllAttributes();
+        $attribute_cache_key = 'attributes';
+        if(!($attributes = Cache::get($attribute_cache_key))){
+            $attributes = \App\Shop\Attribute::getAllAttributes();
+            Cache::put($attribute_cache_key, $attributes, Carbon::now()->addDays(2));
+        }
+
         $products = new \App\Shop\Product();
         if($request->get('attributes')){
             foreach ($request->get('attributes') as $key => $attr){
@@ -59,7 +66,7 @@ class ProductController extends Controller
         }else{
             $products = $products->orderBy('created_at', 'desc');
         }
-        $products = $products->with('rates')->paginate(($request->limit)? $request->limit : 20);
+        $products = $products->with('rates')->paginate(($request->limit)? $request->limit : 30);
 /*        $products = $products->translate();*/
         if($request->ajax()) return response()->json($products);
         return view('products.index', compact('attributes', 'products', 'category'));
@@ -76,10 +83,15 @@ class ProductController extends Controller
     }
     public function show(Request $request, $slug){
         $product = Product::where('url', $slug)->first();
+        if(!$product) return back()->with(['errors' => 'Nie ma takiego produktu']);
+        $product->update([
+            'views_count' => $product->views_count + 1
+        ]);
         $product = $product->translate(App::getLocale(), 'pl');
         $attributes = $product->attributes;
         $attributes = $attributes->groupBy('attribute.name');
+        $proposed = $product->getModel()->getProposed();
         if(!$product) return back()->with(['message' => 'Produkt nie istnieje']);
-        return view('products.show', compact('product', 'attributes'));
+        return view('products.show', compact('product', 'attributes', 'proposed'));
     }
 }

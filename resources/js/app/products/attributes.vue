@@ -4,7 +4,7 @@
             <v-chip rounded class="mb-2" close-icon="mdi-delete" @click:close="unselect(attribute.id)" close v-if="selected[attribute.id] && selected[attribute.id] != '' && !attribute.is_boolean">{{attribute.name}}:
                 <span v-if="attribute.type == 'text'">{{selected[attribute.id]}}</span>
                 <span v-if="attribute.type == 'color'">
-                    <div class="my-1 ml-2" style="width: 20px; height: 20px; border-radius: 100%" :style="{'background-color': selected[attribute.id]}"></div>
+                    <div class="my-1 ml-2" style="width: 20px; height: 20px; border-radius: 100%" :style="{'background-color': $settings.resolveColor(selected[attribute.id]).hex}"></div>
                 </span>
                 <span v-if="attribute.type == 'bool'"> <span class="ml-2" v-if="selected[attribute.id] == 0">Nie</span><span v-else class="ml-2">Tak</span></span>
             </v-chip>

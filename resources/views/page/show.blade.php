@@ -1,9 +1,9 @@
 @extends('layout.app')
 @section('title')
-    {{$page->page_title}}
+    {{$page->title}}
 @endsection
 @section('description')
-    {{$page->page_description}}
+    {{$page->description}}
 @endsection
 @section('css')
     <style type="text/css">
@@ -16,10 +16,15 @@
 @section('content')
     <div class="give-me-space">
         <div class="container">
-            <div class="row text-center" style="justify-content: center">
+            <div class="row" style="justify-content: center">
                 <div class="col-md-12">
                     {!! $page->html !!}
                 </div>
+                @if($page->title == 'Pomoc' || $page->title == 'pomoc')
+                <div class="my-3 col-12">
+                    @include('page.faq')
+                </div>
+                    @endif
             </div>
             <div class="clearfix"></div>
             @if($page->title == 'Kontakt' || $page->title == 'kontakt')

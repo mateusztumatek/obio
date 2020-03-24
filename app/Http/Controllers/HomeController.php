@@ -8,6 +8,7 @@ use App\Mail\ContactMail;
 use App\Newsletter;
 use App\Pos;
 use App\Product;
+use App\Relations\ColorGroup;
 use App\Services\AppService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\App;
@@ -67,5 +68,8 @@ class HomeController extends Controller
             'email' => $request->email
         ]);
         return response()->json(['message' => true]);
+    }
+    public function colors(){
+        return response()->json(ColorGroup::all());
     }
 }

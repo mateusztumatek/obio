@@ -37,9 +37,11 @@
                         <div class="ml-3 ml-lg-5 col-lg-6 col-10">
                             <h2 style="font-size: 1.8rem">{{$box->name}}</h2>
                             <p class="mb-5" style="font-size: 1.1rem">{{strip_tags($box->content)}}</p>
+                            @if($box->url)
                             <div style="transition: all 300ms; overflow: hidden" :style="{'height': ($home.hovered == '{{$box->id}}')? '40px' : '0px'}">
-                                <v-btn rounded color="black" :height="40+'px'" dark>Zobacz więcej</v-btn>
+                                <v-btn rounded color="black" href="{{\App\Helpers\Helper::resolveUrl($box->url)}}" outlined :height="40+'px'" dark>Zobacz więcej</v-btn>
                             </div>
+                                @endif
                         </div>
                     </div>
                 </div>
@@ -71,7 +73,7 @@
                                     </div>
                                     <transition name="fade">
                                     <div v-show="$home.hovered_product == '{{$product->id}}'">
-                                        <v-btn class="w-100 my-1" color="black" href="{{$original_product->link}}" rounded outlined>Wyceń zamówienie</v-btn>
+                                        <v-btn class="w-100 my-1" color="black" href="mailto:wyceny@obio.com.pl" rounded outlined>Wyceń zamówienie</v-btn>
                                         <v-btn class="w-100 my-1" color="black" href="{{$original_product->link}}" rounded outlined>Dowiedz się więcej</v-btn>
                                     </div>
                                     </transition>
@@ -88,7 +90,7 @@
                     @endif
                    @endforeach
                 <div class="col-12 text-center">
-                    <v-btn outlined color="black" height="45px" class="px-12" rounded><a class="default-link" href="{{route('produkty.index')}}">Wszystkie produkty</a></v-btn>
+                    <v-btn outlined color="black" height="45px" class="px-12" rounded><a class="default-link black--text" href="{{route('produkty.index')}}">Wszystkie produkty</a></v-btn>
                 </div>
             </div>
         </div>
@@ -112,7 +114,7 @@
                     <div class="col-md-6">
                         <div class="col-lg-10 ml-auto">
                             <div class="my-border">
-                                <v-img aspect-ratio="1" src="{{url('/storage/',$info_post->images)}}"></v-img>
+                                <v-img aspect-ratio="1" src="{{url('/storage/'.$info_post->images)}}"></v-img>
                             </div>
                         </div>
                     </div>

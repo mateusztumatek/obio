@@ -59,7 +59,6 @@
                 img.src = this.image;
                 img.onload = function () {
                     v.configImage.image = img;
-                    console.log('GOWNGO');
                     v.configImage.image_src = this.src_image;
                 }
 

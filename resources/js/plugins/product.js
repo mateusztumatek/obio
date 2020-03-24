@@ -16,7 +16,6 @@ export default {
       selectedAttributes:{
           deep:true,
           handler: function () {
-              console.log(this.selectedAttributes);
           }
       }
     },
@@ -67,7 +66,6 @@ export default {
                   }
               })
           }
-          console.log(this.attributes, 'ATTRS');
         }
     }
 }

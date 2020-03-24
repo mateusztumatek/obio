@@ -3,8 +3,9 @@
         <div v-if="$cart && $cart.cart">
             <v-navigation-drawer
                     :value="isOpen"
+                    @click
+                    @input="$cart.toggleCart($event)"
                     fixed
-                    temporary
                     :width="($root.checkMobile())? '100%' : '35%'"
                     right
             >

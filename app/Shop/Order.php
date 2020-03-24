@@ -7,12 +7,36 @@ use Illuminate\Database\Eloquent\Model;
 class Order extends Model
 {
     protected $fillable = ['user_id', 'address_id', 'payment_type', 'shipping_id', 'notes', 'status', 'hash', 'amount', 'shipment_amount', 'payment_link', 'paid', 'tracking'];
-    public $appends = ['status_slug'];
+    public $appends = ['status_slug', 'status_color'];
     public function getAmountAttribute($data){
         return number_format(floatval($data), 2, '.', '');
     }
     public function getShipmentAmountAttribute($data){
         return number_format(floatval($data), 2, '.', '');
+    }
+    public function getStatusColorAttribute(){
+        switch ($this->status){
+            case 'new':
+                return 'grey';
+                break;
+            case 'in_progress':
+                return 'blue';
+                break;
+            case 'demand':
+                return 'purple';
+                break;
+            case 'send':
+                return 'green';
+                break;
+            case 'pickup':
+                return 'green';
+                break;
+            case 'canceled':
+                return 'red';
+                break;
+            default:
+                return 'grey';
+        }
     }
     public function getStatusSlugAttribute(){
         switch ($this->status){

@@ -90,7 +90,6 @@
                 const stage = this.$refs.stage.getStage();
                 const { selectedShapeName } = this;
                 const selectedNode = stage.findOne('.' + selectedShapeName);
-                console.log(selectedNode);
                 if(typeof selectedNode != 'undefined'){
                     this.tools[this.tools.findIndex(i => i.name == this.tool)]= selectedNode.attrs;
                 }

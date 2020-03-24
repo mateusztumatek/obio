@@ -9,33 +9,66 @@
     <div class="container">
         <div class="give-me-space" v-cloak>
             <div>
-                <div class="row">
+                <div class="row" itemscope="scope" itemtype="https://schema.org/Product">
                     @php
                         $images = $product->getModel()->getImages();
                     @endphp
                     <div class="col-md-6 pr-4 text-center" style="z-index: 1">
-                        <v-img width="100%" v-if="!$product.selectedImage" src="{{url('/storage/'.$images[0])}}"></v-img>
-                        <v-img width="100%" v-if="$product.selectedImage" :src="$product.selectedImage"></v-img>
+                        <v-img v-zoomable width="100%" v-if="!$product.selectedImage" src="{{url('/storage/'.$images[0])}}"></v-img>
+                        <v-img v-zoomable width="100%" v-if="$product.selectedImage" :src="$product.selectedImage"></v-img>
                             <div class="row">
                                 @foreach($images as $image)
-                                    <div class="col-2">
-                                        <img @click="$product.selectedImage = '{{\Illuminate\Support\Facades\Storage::url($image)}}'" style="width: 100%" src="{{\Illuminate\Support\Facades\Storage::url($image)}}">
+                                    <div class="col-md-2 col-3">
+                                        <div style="position: relative">
+                                            <img itemprop="image" @click="$product.selectedImage = '{{\Illuminate\Support\Facades\Storage::url($image)}}'" style="width: 100%" src="{{url('/storage/'.$image)}}">
+                                        </div>
                                     </div>
                                 @endforeach
                             </div>
+                        {{--@if($proposed->count() > 0)
+                        <div class="mt-4 col-xl-8 col-lg-10 col-md-12 mx-auto">
+                            <h3 class="headline mb-4">Proponowane produkty:</h3>
+                            <v-carousel
+                                    class="my-border-2"
+                                    cycle
+
+                                    height="300"
+                                    hide-delimiters
+                                    show-arrows-on-hover>
+                                @foreach($proposed as $item)
+                                <v-carousel-item>
+                                    <div>
+                                        <v-img height="200px" contain src="{{url('/storage/'.$item->main_image)}}"></v-img>
+                                        <div class="pa-4">
+                                            <div class="row mx-0 justify-space-between align-center">
+                                                <div>
+                                                    <h4 class="headline">
+                                                        {{$item->name}}
+                                                    </h4>
+                                                    <div class="price">{{$item->calculated}}zł</div>
+                                                </div>
+                                                <v-btn class="mt-3" outlined rounded color="black" href="{{$item->link}}"><a class="default-link black--text" href="{{$item->link}}">Zobacz produkt</a></v-btn>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </v-carousel-item>
+                                    @endforeach
+                            </v-carousel>
+                        </div>
+                            @endif--}}
                     </div>
                     <div class="col-md-6 d-flex justify-center" data-class_after_load="slide_from_center_right" style="z-index: 0">
                         <div class="col-lg-10 col-md-10 col-sm-12">
                             {{--<p>{{$product->getModel()->category()->first()->name}}</p>--}}
                             <div class="header d-flex" style="justify-content: space-between; flex-wrap: wrap">
-                                <h1>
+                                <h1 itemprop="name" content="{{$product->name}}">
                                     {{$product->name}}
                                     @if($product->is_new)
                                         <v-chip class="ml-2" color="primary">Nowość</v-chip>
                                     @endif
                                 </h1>
-                                <div>
-                                    <p class="mb-0 font-weight-bold">{{price($product->calculated)}} zł</p>
+                                <div itemprop="offers" itemscope itemtype="http://schema.org/Offer">
+                                    <p itemprop="price" content="{{$product->calculated}}" class="mb-0 font-weight-bold">{{price($product->calculated)}} zł</p>
                                     @if($product->price > $product->calculated)
                                         <p class="mb-0 text-muted price-crossed">{{price($product->price)}} zł</p>
                                     @endif
